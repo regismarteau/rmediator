@@ -18,6 +18,6 @@ public class ACancellableCommandHandler(CommandTriggered commandTrigger) : IHand
             return;
         }
 
-        commandTrigger.Trigger();
+        commandTrigger.TriggerBy("Should not happen");
     }
 }

@@ -5,11 +5,13 @@ namespace Dispatcher.UnitTests;
 
 public class QueryDispatcherTests : BaseTests
 {
-    [Fact]
-    public async Task ShouldReturnSomeResponse()
+    [Theory]
+    [InlineData("someone")]
+    [InlineData("another one")]
+    public async Task ShouldReturnSomeResponse(string requestedBy)
     {
-        var response = await QueryDispatcher.Dispatch(new SomeQuery());
-        Check.That(response.Value).Is("Some response!");
+        var response = await QueryDispatcher.Dispatch(new SomeQuery(requestedBy));
+        Check.That(response.Value).Is($"Some response for {requestedBy}!");
     }
 
     [Fact]

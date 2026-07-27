@@ -12,11 +12,13 @@ public class CommandDispatcherTests : BaseTests
             .AddSingleton<CommandTriggered>();
     }
 
-    [Fact]
-    public async Task ShouldExecuteCommand()
+    [Theory]
+    [InlineData("someone")]
+    [InlineData("another one")]
+    public async Task ShouldExecuteCommand(string requestedBy)
     {
-        await CommandDispatcher.Dispatch(new SomeCommand());
-        Check.That(GetService<CommandTriggered>().Triggered).IsTrue();
+        await CommandDispatcher.Dispatch(new SomeCommand(requestedBy));
+        Check.That(GetService<CommandTriggered>().TriggeredBy).Is(requestedBy);
     }
 
     [Fact]
@@ -33,6 +35,6 @@ public class CommandDispatcherTests : BaseTests
         await Task.WhenAll(
             Task.Factory.StartNew(async () => await CommandDispatcher.Dispatch(new ACancellableCommand(), token.Token), TestContext.Current.CancellationToken),
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
-        Check.That(GetService<CommandTriggered>().Triggered).IsFalse();
+        Check.That(GetService<CommandTriggered>().HasBeenTriggered).IsFalse();
     }
 }

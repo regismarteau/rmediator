@@ -2,10 +2,12 @@
 
 public class CommandTriggered
 {
-    public bool Triggered { get; private set; }
+    public string? TriggeredBy { get; private set; }
 
-    public void Trigger()
+    public bool HasBeenTriggered => !string.IsNullOrEmpty(TriggeredBy);
+
+    public void TriggerBy(string requester)
     {
-        this.Triggered = true;
+        this.TriggeredBy = requester;
     }
 }
