@@ -8,11 +8,11 @@ public class QueryDispatcher(HandlersRegistry registry, IServiceProvider service
     public async Task<TResponse> Dispatch<TResponse>(IQuery<TResponse> query, CancellationToken? cancellationToken = default)
     {
         var handlers = registry.QueryHandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(query.GetType())).ToList();
-        if (handlers.Count == 1)
+        if (handlers.Count != 1)
         {
-            return (TResponse)await ((IHandleRequest)services.GetRequiredService(handlers.First().HandledInterface)).Handle(query, cancellationToken ?? CancellationToken.None);
+            throw new InvalidOperationException($"There is no unique handler for query {query.GetType().Name}");
         }
 
-        throw new InvalidOperationException($"There is no unique handler for query {query.GetType().Name}");
+        return (TResponse)await ((IHandleRequest)services.GetRequiredService(handlers.First().HandledInterface)).Handle(query, cancellationToken ?? CancellationToken.None);
     }
 }

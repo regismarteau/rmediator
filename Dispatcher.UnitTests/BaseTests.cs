@@ -24,7 +24,7 @@ public class BaseTests
 
     protected IDispatchCommand CommandDispatcher => GetService<IDispatchCommand>();
 
-    protected IPublishDomainEvent DomainEventPublisher => GetService<IPublishDomainEvent>();
+    protected IPublishDomainEvents DomainEventPublisher => GetService<IPublishDomainEvents>();
 
     protected T GetService<T>() where T : notnull
     {

@@ -1,4 +1,5 @@
 ﻿using Dispatcher.Commands;
+using Dispatcher.DomainEvents;
 using Dispatcher.Queries;
 using System.Reflection;
 
@@ -17,14 +18,20 @@ public class HandlersRegistry
 
         this.CommandHandlerDefinitions = [.. allTypes
             .SelectMany(t => t.GetInterfaces()
-                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleCommand<>)||i.GetGenericTypeDefinition() == typeof(IHandleCommand<,>)))
+                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleCommand<>) || i.GetGenericTypeDefinition() == typeof(IHandleCommand<,>)))
+                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, t)))];
+
+        this.DomainEventHandlerDefinitions = [.. allTypes
+            .SelectMany(t => t.GetInterfaces()
+                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IListenToDomainEvent<>)))
                 .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, t)))];
     }
 
     public IReadOnlyCollection<HandlerDefinition> QueryHandlerDefinitions { get; }
     public IReadOnlyCollection<HandlerDefinition> CommandHandlerDefinitions { get; }
+    public IReadOnlyCollection<HandlerDefinition> DomainEventHandlerDefinitions { get; }
 
-    public IEnumerable<HandlerDefinition> AllDefinitions => [.. QueryHandlerDefinitions, .. CommandHandlerDefinitions];
+    public IEnumerable<HandlerDefinition> AllDefinitions => [.. QueryHandlerDefinitions, .. CommandHandlerDefinitions, ..DomainEventHandlerDefinitions];
 }
 
 public class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)

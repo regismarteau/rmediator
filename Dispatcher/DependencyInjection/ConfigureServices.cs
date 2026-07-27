@@ -19,7 +19,7 @@ public static class ConfigureServices
             return services
                 .AddTransient<IDispatchQuery, QueryDispatcher>()
                 .AddTransient<IDispatchCommand, CommandDispatcher>()
-                .AddTransient<IPublishDomainEvent, DomainEventPublisher>();
+                .AddTransient<IPublishDomainEvents, DomainEventPublisher>();
         }
     }
 

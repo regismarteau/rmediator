@@ -1,5 +1,4 @@
 ﻿using Dispatcher.DependencyInjection;
-using Dispatcher.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dispatcher.Commands;
@@ -8,24 +7,28 @@ public class CommandDispatcher(HandlersRegistry registry, IServiceProvider servi
 {
     public async Task Dispatch<TCommand>(TCommand command, CancellationToken? cancellationToken = null) where TCommand : ICommand
     {
-        var handlers = registry.CommandHandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(command.GetType())).ToList();
-        if (handlers.Count == 1)
+        var handlers = FindHandlersBy(command);
+        if (handlers.Count != 1)
         {
-            await ((IHandleCommand<TCommand>)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
-            return;
+            throw new InvalidOperationException($"There is no unique handler for command {command.GetType().Name}");
         }
 
-        throw new InvalidOperationException($"There is no unique handler for command {command.GetType().Name}");
+        await ((IHandleCommand<TCommand>)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
     }
 
     public async Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken? cancellationToken = null)
     {
-        var handlers = registry.CommandHandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(command.GetType())).ToList();
-        if (handlers.Count == 1)
+        var handlers = FindHandlersBy(command);
+        if (handlers.Count != 1)
         {
-            return (TResult)await((IHandleRequest)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
+            throw new InvalidOperationException($"There is no unique handler for command {command.GetType().Name}");
         }
 
-        throw new InvalidOperationException($"There is no unique handler for command {command.GetType().Name}");
+        return (TResult)await ((IHandleRequest)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
+    }
+
+    private IReadOnlyCollection<HandlerDefinition> FindHandlersBy(object command)
+    {
+        return [.. registry.CommandHandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(command.GetType()))];
     }
 }
