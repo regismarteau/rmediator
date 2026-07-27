@@ -7,7 +7,7 @@ public interface IPublishDomainEvents
 
 public interface IDomainEvent;
 
-public interface IListenToDomainEvent<TDomainEvent> where TDomainEvent : IDomainEvent
+public interface IListenToDomainEvent<in TDomainEvent> where TDomainEvent : IDomainEvent
 {
     Task Listen(TDomainEvent @event, CancellationToken cancellationToken);
 }

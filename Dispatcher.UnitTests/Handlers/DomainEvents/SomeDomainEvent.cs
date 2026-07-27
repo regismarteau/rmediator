@@ -9,6 +9,7 @@ public class SomeDomainEventListener(DomainEventListened domainEvents) : IListen
     public Task Listen(SomeDomainEvent @event, CancellationToken cancellationToken)
     {
         domainEvents.RaiseBy(@event.RaisedBy);
+        domainEvents.Listen(GetType());
         return Task.CompletedTask;
     }
 }

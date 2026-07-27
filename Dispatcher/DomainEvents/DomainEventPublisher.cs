@@ -13,9 +13,12 @@ public class DomainEventPublisher(HandlersRegistry registry, IServiceProvider se
             throw new InvalidOperationException($"There is no listener for event {@event.GetType().Name}");
         }
 
-        foreach (var handler in handlers)
+        foreach (var handler in handlers.SelectMany(h => services
+            .GetServices(h.HandledInterface))
+            .Where(h => h is not null)
+            .DistinctBy(h => h!.GetType()))
         {
-            await ((IListenToDomainEvent<TDomainEvent>)services.GetRequiredService(handlers.First().HandledInterface)).Listen(@event, cancellationToken ?? CancellationToken.None);
+            await ((IListenToDomainEvent<TDomainEvent>)handler!).Listen(@event, cancellationToken ?? CancellationToken.None);
         }
     }
 }
