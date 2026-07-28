@@ -1,4 +1,6 @@
-﻿namespace Dispatcher.Extensions;
+﻿using Dispatcher.Middlewares;
+
+namespace Dispatcher.Extensions;
 
 internal static class TypeExtensions
 {
@@ -7,6 +9,11 @@ internal static class TypeExtensions
         public bool IsOfGenericType(params Type[] genericTypes)
         {
             return type.IsGenericType && genericTypes.Contains(type.GetGenericTypeDefinition());
+        }
+
+        public bool IsAMiddleware()
+        {
+            return type.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>));
         }
     }
 }

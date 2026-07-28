@@ -1,7 +1,6 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.DomainEvents;
 using Dispatcher.Extensions;
-using Dispatcher.Middlewares;
 using Dispatcher.Queries;
 using System.Reflection;
 
@@ -17,7 +16,7 @@ internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadO
 
     public IReadOnlyCollection<HandlerDefinition> MiddlewareHandlersDefinition { get; } = [.. middlewareTypes
             .SelectMany(m => m.GetInterfaces()
-                .Where(i => i.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>)))
+                .Where(i => i.IsAMiddleware())
                 .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, m)))];
 
     public IEnumerable<HandlerDefinition> HandlerDefinitions { get; } = [.. assemblies

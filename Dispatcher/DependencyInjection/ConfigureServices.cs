@@ -1,7 +1,6 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.DomainEvents;
 using Dispatcher.Extensions;
-using Dispatcher.Middlewares;
 using Dispatcher.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -38,26 +37,28 @@ public static class ConfigureServices
 
         public ConfigureServicesOptionsBuilder AddMiddlewares(params Type[] middlewareTypes)
         {
-            this.middlewares.AddRange(middlewareTypes);
+            middlewares.AddRange(middlewareTypes);
             return this;
         }
 
         public IServiceCollection Build(IServiceCollection services)
         {
-            var registry = new HandlersRegistry(this.assemblies, this.middlewares);
+            var registry = new HandlersRegistry(assemblies, middlewares);
 
             foreach (HandlerDefinition definition in registry.HandlerDefinitions)
             {
                 services.AddTransient(definition.HandledInterface, definition.HandledConcreteType);
             }
 
-            foreach (var type in this.middlewares)
+            foreach (var definition in middlewares.SelectMany(type => type
+                .GetInterfaces()
+                .Where(i => i.IsAMiddleware())
+                .Select(i => new { ConcreteType = type, InterfaceServiceType = i })))
             {
-                foreach (var serviceType in type.GetInterfaces()
-                    .Where(i => i.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>))))
-                {
-                    services.AddTransient(type.IsGenericType ? serviceType.GetGenericTypeDefinition() : serviceType, type);
-                }
+                services.AddTransient(definition.ConcreteType.IsGenericType ?
+                    definition.InterfaceServiceType.GetGenericTypeDefinition() :
+                    definition.InterfaceServiceType,
+                    definition.ConcreteType);
             }
 
             return services
