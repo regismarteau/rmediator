@@ -34,11 +34,11 @@ public class QueryDispatcherTests : BaseTests
     }
 
     [Fact]
-    public async Task CorrespondingMiddlewaresAreExecuted()
+    public async Task CorrespondingMiddlewaresAreExecutedInOrder()
     {
         await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
-        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
-            typeof(AStronglyTypedQueryMiddleware), 
-            typeof(AGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
+            typeof(ASecondlyExecutedStronglyTypedQueryMiddleware));
     }
 }

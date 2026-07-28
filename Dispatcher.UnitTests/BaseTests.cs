@@ -18,12 +18,12 @@ public class BaseTests
             .AddDispatcher(o => o
                 .ScanAssemblies(this.GetType().Assembly)
                 .WithMiddlewares(
-                    typeof(AStronglyTypedQueryMiddleware),
-                    typeof(AGenericTypedQueryMiddleware<,>),
-                    typeof(AStronglyTypedCommandMiddleware),
-                    typeof(AGenericTypedCommandMiddleware<>),
-                    typeof(AStronglyTypedCommandWithResultMiddleware),
-                    typeof(AGenericTypedCommandWithResultMiddleware<,>)))
+                    typeof(AFirstlyExecutedGenericTypedQueryMiddleware<,>),
+                    typeof(AFirstlyExecutedGenericTypedCommandMiddleware<>),
+                    typeof(AFirstlyExecutedGenericTypedCommandWithResultMiddleware<,>),
+                    typeof(ASecondlyExecutedStronglyTypedQueryMiddleware),
+                    typeof(ASecondlyExecutedStronglyTypedCommandMiddleware),
+                    typeof(ASecondlyExecutedStronglyTypedCommandWithResultMiddleware)))
             .AddSingleton<ExecutedMiddlewares>())
             .BuildServiceProvider(true);
     }

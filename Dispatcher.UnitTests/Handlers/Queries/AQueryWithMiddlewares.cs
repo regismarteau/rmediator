@@ -13,12 +13,11 @@ public class AQueryWithMiddlewaresHandler : IHandleQuery<AQueryWithMiddlewares, 
     }
 }
 
-public class AStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<AQueryWithMiddlewares, SomeQueryResponse>
+public class ASecondlyExecutedStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<AQueryWithMiddlewares, SomeQueryResponse>
 {
     public async Task<SomeQueryResponse> Handle(AQueryWithMiddlewares request, NextMiddleware<SomeQueryResponse> next, CancellationToken cancellationToken)
     {
-        var result = await next(request, cancellationToken);
         middlewares.MarkAsExecuted(GetType());
-        return result;
+        return await next(request, cancellationToken);
     }
 }

@@ -40,20 +40,20 @@ public class CommandDispatcherTests : BaseTests
     }
 
     [Fact]
-    public async Task CommandCorrespondingMiddlewaresAreExecuted()
+    public async Task CommandCorrespondingMiddlewaresAreExecutedInOrder()
     {
         await this.CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
-        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
-            typeof(AStronglyTypedCommandMiddleware),
-            typeof(AGenericTypedCommandMiddleware<ACommandWithMiddlewares>));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGenericTypedCommandMiddleware<ACommandWithMiddlewares>),
+            typeof(ASecondlyExecutedStronglyTypedCommandMiddleware));
     }
 
     [Fact]
-    public async Task CommandWithResultCorrespondingMiddlewaresAreExecuted()
+    public async Task CommandWithResultCorrespondingMiddlewaresAreExecutedInOrder()
     {
         await this.CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
-        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
-            typeof(AStronglyTypedCommandWithResultMiddleware),
-            typeof(AGenericTypedCommandWithResultMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGenericTypedCommandWithResultMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
+            typeof(ASecondlyExecutedStronglyTypedCommandWithResultMiddleware));
     }
 }

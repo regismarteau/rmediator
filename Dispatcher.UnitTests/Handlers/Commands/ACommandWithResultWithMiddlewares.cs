@@ -13,12 +13,11 @@ public class ACommandWithResultWithMiddlewaresHandler : IHandleCommand<ACommandW
     }
 }
 
-public class AStronglyTypedCommandWithResultMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>
+public class ASecondlyExecutedStronglyTypedCommandWithResultMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>
 {
     public async Task<SomeCommandResult> Handle(ACommandWithResultWithMiddlewares request, NextMiddleware<SomeCommandResult> next, CancellationToken cancellationToken)
     {
-        var result = await next(request, cancellationToken);
         middlewares.MarkAsExecuted(GetType());
-        return result;
+        return await next(request, cancellationToken);
     }
 }
