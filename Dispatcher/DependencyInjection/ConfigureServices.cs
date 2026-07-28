@@ -26,16 +26,16 @@ public static class ConfigureServices
 
     public class ConfigureServicesOptionsBuilder
     {
-        private IReadOnlyCollection<Assembly> assemblies = [];
-        private List<Type> middlewares = [];
+        private readonly List<Assembly> assemblies = [];
+        private readonly List<Type> middlewares = [];
 
         public ConfigureServicesOptionsBuilder ScanAssemblies(params Assembly[] assemblies)
         {
-            this.assemblies = assemblies;
+            this.assemblies.AddRange(assemblies);
             return this;
         }
 
-        public ConfigureServicesOptionsBuilder WithMiddlewares(params Type[] middlewareTypes)
+        public ConfigureServicesOptionsBuilder AddMiddlewares(params Type[] middlewareTypes)
         {
             this.middlewares.AddRange(middlewareTypes);
             return this;
@@ -45,7 +45,7 @@ public static class ConfigureServices
         {
             var registry = new HandlersRegistry(this.assemblies, this.middlewares);
 
-            foreach (HandlerDefinition definition in registry.AllDefinitions)
+            foreach (HandlerDefinition definition in registry.HandlerDefinitions)
             {
                 services.AddTransient(definition.HandledInterface, definition.HandledConcreteType);
             }

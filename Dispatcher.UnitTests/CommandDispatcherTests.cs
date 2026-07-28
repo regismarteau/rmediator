@@ -1,5 +1,6 @@
 ﻿using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
+using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -44,8 +45,9 @@ public class CommandDispatcherTests : BaseTests
     {
         await this.CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
-            typeof(AFirstlyExecutedGenericTypedCommandMiddleware<ACommandWithMiddlewares>),
-            typeof(ASecondlyExecutedStronglyTypedCommandMiddleware));
+            typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithMiddlewares>),
+            typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithMiddlewares>),
+            typeof(AThirdlyExecutedStronglyTypedCommandMiddleware));
     }
 
     [Fact]
@@ -53,7 +55,8 @@ public class CommandDispatcherTests : BaseTests
     {
         await this.CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
-            typeof(AFirstlyExecutedGenericTypedCommandWithResultMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
-            typeof(ASecondlyExecutedStronglyTypedCommandWithResultMiddleware));
+            typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
+            typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
+            typeof(AThirdlyExecutedStronglyTypedCommandWithResultMiddleware));
     }
 }

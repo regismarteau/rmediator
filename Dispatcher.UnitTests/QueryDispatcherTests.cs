@@ -38,7 +38,8 @@ public class QueryDispatcherTests : BaseTests
     {
         await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
-            typeof(AFirstlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
-            typeof(ASecondlyExecutedStronglyTypedQueryMiddleware));
+            typeof(AFirstlyExecutedGeneralMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
+            typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
+            typeof(AThirdlyExecutedStronglyTypedQueryMiddleware));
     }
 }

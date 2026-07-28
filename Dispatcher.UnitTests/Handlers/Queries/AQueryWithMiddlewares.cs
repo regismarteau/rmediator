@@ -1,5 +1,6 @@
 ﻿using Dispatcher.Middlewares;
 using Dispatcher.Queries;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.Queries;
 
@@ -13,7 +14,7 @@ public class AQueryWithMiddlewaresHandler : IHandleQuery<AQueryWithMiddlewares, 
     }
 }
 
-public class ASecondlyExecutedStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<AQueryWithMiddlewares, SomeQueryResponse>
+public class AThirdlyExecutedStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<AQueryWithMiddlewares, SomeQueryResponse>
 {
     public async Task<SomeQueryResponse> Handle(AQueryWithMiddlewares request, NextMiddleware<SomeQueryResponse> next, CancellationToken cancellationToken)
     {

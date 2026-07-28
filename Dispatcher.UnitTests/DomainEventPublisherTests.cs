@@ -1,4 +1,6 @@
-﻿using Dispatcher.UnitTests.Handlers.DomainEvents;
+﻿using Dispatcher.UnitTests.Handlers.Commands;
+using Dispatcher.UnitTests.Handlers.DomainEvents;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -35,5 +37,15 @@ public class DomainEventPublisherTests : BaseTests
     {
         await this.DomainEventPublisher.Publish(new AnInheritedDomainEvent());
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(AFirstStronglyTypedListenerHandler), typeof(ASecondLessStrictConcreteTypeListenerHandler), typeof(AThirdInheritedInterfaceListenerHandler));
+    }
+
+    [Fact]
+    public async Task DomainEventCorrespondingMiddlewaresAreExecutedInOrder()
+    {
+        await this.DomainEventPublisher.Publish(new SomeDomainEvent("Raised by me"));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGeneralMiddleware<SomeDomainEvent>),
+            typeof(ASecondlyExecutedGenericTypedDomainEventMiddleware<SomeDomainEvent>),
+            typeof(AThirdlyExecutedStronglyTypedDomainEventMiddleware));
     }
 }

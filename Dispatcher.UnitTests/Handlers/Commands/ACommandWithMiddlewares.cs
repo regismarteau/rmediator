@@ -1,5 +1,6 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.Middlewares;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.Commands;
 
@@ -13,7 +14,7 @@ public class ACommandWithMiddlewaresHandler : IHandleCommand<ACommandWithMiddlew
     }
 }
 
-public class ASecondlyExecutedStronglyTypedCommandMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<ACommandWithMiddlewares>
+public class AThirdlyExecutedStronglyTypedCommandMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<ACommandWithMiddlewares>
 {
     public async Task Handle(ACommandWithMiddlewares request, NextMiddleware next, CancellationToken cancellationToken)
     {

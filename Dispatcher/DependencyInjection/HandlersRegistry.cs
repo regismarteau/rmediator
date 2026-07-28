@@ -1,44 +1,30 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.DomainEvents;
+using Dispatcher.Extensions;
 using Dispatcher.Middlewares;
 using Dispatcher.Queries;
 using System.Reflection;
 
 namespace Dispatcher.DependencyInjection;
 
-public class HandlersRegistry
+public class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadOnlyCollection<Type> middlewareTypes)
 {
-    public HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadOnlyCollection<Type> middlewareTypes)
-    {
-        IReadOnlyCollection<Type> allTypes = [.. assemblies.SelectMany(a => a.GetTypes())];
+    private static readonly IReadOnlyCollection<Type> HandlerServiceTypes = [
+        typeof(IHandleQuery<,>),
+        typeof(IHandleCommand<>),
+        typeof(IHandleCommand<,>),
+        typeof(IListenToDomainEvent<>)];
 
-        this.QueryHandlerDefinitions = [.. allTypes
-            .SelectMany(t => t.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleQuery<,>))
-                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, t)))];
-
-        this.CommandHandlerDefinitions = [.. allTypes
-            .SelectMany(t => t.GetInterfaces()
-                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleCommand<>) || i.GetGenericTypeDefinition() == typeof(IHandleCommand<,>)))
-                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, t)))];
-
-        this.DomainEventHandlerDefinitions = [.. allTypes
-            .SelectMany(t => t.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IListenToDomainEvent<>))
-                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, t)))];
-
-        this.MiddlewareHandlersDefinition = [.. middlewareTypes
+    public IReadOnlyCollection<HandlerDefinition> MiddlewareHandlersDefinition { get; } = [.. middlewareTypes
             .SelectMany(m => m.GetInterfaces()
-                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>) || i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>)))
-                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, m)))];
-    }
+                .Where(i => i.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>)))
+                .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, m)))];
 
-    public IReadOnlyCollection<HandlerDefinition> QueryHandlerDefinitions { get; }
-    public IReadOnlyCollection<HandlerDefinition> CommandHandlerDefinitions { get; }
-    public IReadOnlyCollection<HandlerDefinition> DomainEventHandlerDefinitions { get; }
-    public IReadOnlyCollection<HandlerDefinition> MiddlewareHandlersDefinition { get; }
-
-    public IEnumerable<HandlerDefinition> AllDefinitions => [.. QueryHandlerDefinitions, .. CommandHandlerDefinitions, .. DomainEventHandlerDefinitions];
+    public IEnumerable<HandlerDefinition> HandlerDefinitions { get; } = [.. assemblies
+            .SelectMany(a => a.GetTypes())
+            .SelectMany(t => t.GetInterfaces()
+            .Where(i => i.IsOfGenericType([.. HandlerServiceTypes]))
+            .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
 }
 
 public class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)

@@ -9,7 +9,12 @@ public interface IPublishDomainEvents
 
 public interface IDomainEvent : IRequest;
 
-public interface IListenToDomainEvent<in TDomainEvent> where TDomainEvent : IDomainEvent
+public interface IListenToDomainEvent<in TDomainEvent> : IHandleRequest where TDomainEvent : IDomainEvent
 {
     Task Listen(TDomainEvent @event, CancellationToken cancellationToken);
+
+    async Task IHandleRequest.Handle(IRequest request, CancellationToken cancellationToken)
+    {
+        await this.Listen((TDomainEvent)request, cancellationToken);
+    }
 }

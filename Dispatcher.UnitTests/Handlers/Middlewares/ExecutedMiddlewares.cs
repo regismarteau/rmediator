@@ -1,4 +1,4 @@
-﻿namespace Dispatcher.UnitTests;
+﻿namespace Dispatcher.UnitTests.Handlers.Middlewares;
 
 public class ExecutedMiddlewares
 {

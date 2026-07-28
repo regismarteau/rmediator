@@ -1,4 +1,7 @@
 ﻿using Dispatcher.DomainEvents;
+using Dispatcher.Middlewares;
+using Dispatcher.UnitTests.Handlers.Commands;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.DomainEvents;
 
@@ -11,5 +14,14 @@ public class SomeDomainEventListener(DomainEventListened domainEvents) : IListen
         domainEvents.RaiseBy(@event.RaisedBy);
         domainEvents.Listen(GetType());
         return Task.CompletedTask;
+    }
+}
+
+public class AThirdlyExecutedStronglyTypedDomainEventMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<SomeDomainEvent>
+{
+    public async Task Handle(SomeDomainEvent request, NextMiddleware next, CancellationToken cancellationToken)
+    {
+        middlewares.MarkAsExecuted(GetType());
+        await next(request, cancellationToken);
     }
 }

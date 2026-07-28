@@ -3,6 +3,7 @@ using Dispatcher.DependencyInjection;
 using Dispatcher.DomainEvents;
 using Dispatcher.Queries;
 using Dispatcher.UnitTests.Handlers.Commands;
+using Dispatcher.UnitTests.Handlers.DomainEvents;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,19 +12,22 @@ namespace Dispatcher.UnitTests;
 
 public class BaseTests
 {
-
     public BaseTests()
     {
         this.Services = Initialize(new ServiceCollection()
             .AddDispatcher(o => o
                 .ScanAssemblies(this.GetType().Assembly)
-                .WithMiddlewares(
-                    typeof(AFirstlyExecutedGenericTypedQueryMiddleware<,>),
-                    typeof(AFirstlyExecutedGenericTypedCommandMiddleware<>),
-                    typeof(AFirstlyExecutedGenericTypedCommandWithResultMiddleware<,>),
-                    typeof(ASecondlyExecutedStronglyTypedQueryMiddleware),
-                    typeof(ASecondlyExecutedStronglyTypedCommandMiddleware),
-                    typeof(ASecondlyExecutedStronglyTypedCommandWithResultMiddleware)))
+                .AddMiddlewares(
+                    typeof(AFirstlyExecutedGeneralMiddleware<>),
+                    typeof(AFirstlyExecutedGeneralMiddleware<,>),
+                    typeof(ASecondlyExecutedGenericTypedQueryMiddleware<,>),
+                    typeof(ASecondlyExecutedGenericTypedCommandMiddleware<>),
+                    typeof(ASecondlyExecutedGenericTypedCommandMiddleware<,>),
+                    typeof(ASecondlyExecutedGenericTypedDomainEventMiddleware<>),
+                    typeof(AThirdlyExecutedStronglyTypedQueryMiddleware),
+                    typeof(AThirdlyExecutedStronglyTypedCommandMiddleware),
+                    typeof(AThirdlyExecutedStronglyTypedCommandWithResultMiddleware),
+                    typeof(AThirdlyExecutedStronglyTypedDomainEventMiddleware)))
             .AddSingleton<ExecutedMiddlewares>())
             .BuildServiceProvider(true);
     }

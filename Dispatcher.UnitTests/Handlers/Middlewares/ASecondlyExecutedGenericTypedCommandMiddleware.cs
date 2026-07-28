@@ -3,7 +3,7 @@ using Dispatcher.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.Middlewares;
 
-public class AFirstlyExecutedGenericTypedCommandMiddleware<TCommand>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TCommand> where TCommand : ICommand
+public class ASecondlyExecutedGenericTypedCommandMiddleware<TCommand>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TCommand> where TCommand : ICommand
 {
     public async Task Handle(TCommand request, NextMiddleware next, CancellationToken cancellationToken)
     {
@@ -12,7 +12,7 @@ public class AFirstlyExecutedGenericTypedCommandMiddleware<TCommand>(ExecutedMid
     }
 }
 
-public class AFirstlyExecutedGenericTypedCommandWithResultMiddleware<TCommand, TResult>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TCommand, TResult> where TCommand : ICommand<TResult>
+public class ASecondlyExecutedGenericTypedCommandMiddleware<TCommand, TResult>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TCommand, TResult> where TCommand : ICommand<TResult>
 {
     public async Task<TResult> Handle(TCommand request, NextMiddleware<TResult> next, CancellationToken cancellationToken)
     {
