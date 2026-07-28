@@ -54,24 +54,6 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
 
     protected IReadOnlyCollection<HandlerDefinition> GetHandlersFor(IRequest request)
     {
-        return registry.HandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(request.GetType())).ToList();
-    }
-
-    private NextMiddleware<TResponse> GetNextMiddleware<TResponse>(IReadOnlyCollection<IAbstractMiddlewareHandler<TResponse>> middlewares, Type handlerServiceType, int index)
-    {
-        if (index == middlewares.Count - 1)
-        {
-            return async (request, token) => await ((IHandleRequest<TResponse>)services.GetRequiredService(handlerServiceType)).Handle(request, token);
-        }
-        return async (request, token) => await middlewares.ElementAt(index + 1).Handle(request, GetNextMiddleware(middlewares, handlerServiceType, index + 1), token);
-    }
-
-    private NextMiddleware GetNextMiddleware(IReadOnlyCollection<IAbstractMiddlewareHandler> middlewares, Type handlerServiceType, int index)
-    {
-        if (index == middlewares.Count - 1)
-        {
-            return async (request, token) => await ((IHandleRequest)services.GetRequiredService(handlerServiceType)).Handle(request, token);
-        }
-        return async (request, token) => await middlewares.ElementAt(index + 1).Handle(request, GetNextMiddleware(middlewares, handlerServiceType, index + 1), token);
+        return [.. registry.HandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(request.GetType()))];
     }
 }
