@@ -29,9 +29,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
 
     protected async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, HandlerDefinition handler, CancellationToken cancellationToken)
     {
-        var middlewareServices = registry.MiddlewareHandlersDefinition
-            .Where(t => t.HandledType.IsAssignableFrom(request.GetType()))
-            .SelectMany(h => services.GetServices(h.InterfaceService.GetGenericTypeDefinition().MakeGenericType(request.GetType(), typeof(TResponse))))
+        var middlewareServices = services.GetServices(typeof(IHandleMiddleware<,>).MakeGenericType(request.GetType(), typeof(TResponse)))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler<TResponse>>()
@@ -44,9 +42,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
 
     protected List<IAbstractMiddlewareHandler> GetMiddlewareServicesFor(IRequest request)
     {
-        return [.. registry.MiddlewareHandlersDefinition
-            .Where(t => t.HandledType.IsAssignableFrom(request.GetType()))
-            .SelectMany(h => services.GetServices(h.InterfaceService.GetGenericTypeDefinition().MakeGenericType(request.GetType())))
+        return [.. services.GetServices(typeof(IHandleMiddleware<>).MakeGenericType(request.GetType()))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler>()];

@@ -9,28 +9,28 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
 {
     private readonly IServiceProvider services = services;
 
-    public async Task Publish<TDomainEvent>(TDomainEvent @event, CancellationToken? cancellationToken = null) where TDomainEvent : IDomainEvent
+    public async Task Publish(IDomainEvent @event, CancellationToken? cancellationToken = null)
     {
         IReadOnlyCollection<HandlerDefinition> handlers = GetHandlersFor(@event);
         if (handlers.Count == 0)
         {
-            throw new InvalidOperationException($"There is no listener for event {@event.GetType().Name}");
+            return;
         }
 
         var middlewareServices = GetMiddlewareServicesFor(@event)
-            .Wrap((request, token) => ExecuteHandlers((TDomainEvent)request, handlers, token))
+            .Wrap((request, token) => ExecuteHandlers((IDomainEvent)request, handlers, token))
             .Invoke(@event, cancellationToken ?? CancellationToken.None);
     }
 
 
-    private async Task ExecuteHandlers<TDomainEvent>(TDomainEvent @event, IReadOnlyCollection<HandlerDefinition> handlers, CancellationToken cancellationToken) where TDomainEvent : IDomainEvent
+    private async Task ExecuteHandlers(IDomainEvent @event, IReadOnlyCollection<HandlerDefinition> handlers, CancellationToken cancellationToken)
     {
         foreach (var handler in handlers.SelectMany(h => services
             .GetServices(h.InterfaceService))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType().IsGenericType ? h.GetType().GetGenericTypeDefinition() : h.GetType()))
         {
-            await ((IListenToDomainEvent<TDomainEvent>)handler!).Listen(@event, cancellationToken);
+            await ((IHandleRequest)handler!).Handle(@event, cancellationToken);
         }
     }
 }

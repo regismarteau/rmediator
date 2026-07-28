@@ -2,7 +2,7 @@
 
 public interface IPublishDomainEvents
 {
-    Task Publish<TDomainEvent>(TDomainEvent @event, CancellationToken? cancellationToken = null) where TDomainEvent : IDomainEvent;
+    Task Publish(IDomainEvent @event, CancellationToken? cancellationToken = null);
 }
 
 public interface IDomainEvent : IRequest;

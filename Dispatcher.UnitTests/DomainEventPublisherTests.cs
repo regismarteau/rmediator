@@ -1,4 +1,5 @@
-﻿using Dispatcher.UnitTests.Handlers.DomainEvents;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.UnitTests.Handlers.DomainEvents;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;

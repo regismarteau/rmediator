@@ -43,4 +43,13 @@ public class QueryDispatcherTests : BaseTests
             typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
             typeof(AThirdlyExecutedStronglyTypedQueryMiddleware));
     }
+
+    [Fact]
+    public async Task SomeQueriesMightOnlyHaveGenericMiddlewares()
+    {
+        await QueryDispatcher.Dispatch(new AnotherQuery());
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGeneralMiddleware<AnotherQuery, SomeQueryResponse>),
+            typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AnotherQuery, SomeQueryResponse>));
+    }
 }

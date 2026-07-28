@@ -1,5 +1,6 @@
 ﻿using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
+using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -57,5 +58,14 @@ public class CommandDispatcherTests : BaseTests
             typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
             typeof(AThirdlyExecutedStronglyTypedCommandWithResultMiddleware));
+    }
+
+    [Fact]
+    public async Task SomeCommandsMightOnlyHaveGenericMiddlewares()
+    {
+        await CommandDispatcher.Dispatch(new SomeCommand("Requested by me"));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
+            typeof(AFirstlyExecutedGeneralMiddleware<SomeCommand>),
+            typeof(ASecondlyExecutedGenericTypedCommandMiddleware<SomeCommand>));
     }
 }
