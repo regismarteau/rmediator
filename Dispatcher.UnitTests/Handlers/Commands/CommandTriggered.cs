@@ -8,6 +8,6 @@ public class CommandTriggered
 
     public void TriggerBy(string requester)
     {
-        this.TriggeredBy = requester;
+        TriggeredBy = requester;
     }
 }

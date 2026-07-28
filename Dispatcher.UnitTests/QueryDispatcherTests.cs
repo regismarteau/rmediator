@@ -36,7 +36,7 @@ public class QueryDispatcherTests : BaseTests
     [Fact]
     public async Task CorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
+        await QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
             typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),

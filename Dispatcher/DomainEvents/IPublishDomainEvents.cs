@@ -15,6 +15,6 @@ public interface IListenToDomainEvent<in TDomainEvent> : IHandleRequest where TD
 
     async Task IHandleRequest.Handle(IRequest request, CancellationToken cancellationToken)
     {
-        await this.Listen((TDomainEvent)request, cancellationToken);
+        await Listen((TDomainEvent)request, cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Dispatcher.UnitTests.Handlers.Commands;
-using Dispatcher.UnitTests.Handlers.DomainEvents;
+﻿using Dispatcher.UnitTests.Handlers.DomainEvents;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
@@ -20,7 +19,7 @@ public class DomainEventPublisherTests : BaseTests
     [InlineData("another one")]
     public async Task ShouldListenToDomainEvent(string raisedBy)
     {
-        await this.DomainEventPublisher.Publish(new SomeDomainEvent(raisedBy));
+        await DomainEventPublisher.Publish(new SomeDomainEvent(raisedBy));
         Check.That(DomainEvent.RaisedBy).Is(raisedBy);
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(SomeDomainEventListener));
     }
@@ -28,21 +27,21 @@ public class DomainEventPublisherTests : BaseTests
     [Fact]
     public async Task MultipleListenersCouldByDefined()
     {
-        await this.DomainEventPublisher.Publish(new AMultipleListenedDomainEvent());
+        await DomainEventPublisher.Publish(new AMultipleListenedDomainEvent());
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(AFirstListenerHandler), typeof(ASecondListenerHandler));
     }
 
     [Fact]
     public async Task ListenersHandleDomainEventsInheritance()
     {
-        await this.DomainEventPublisher.Publish(new AnInheritedDomainEvent());
+        await DomainEventPublisher.Publish(new AnInheritedDomainEvent());
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(AFirstStronglyTypedListenerHandler), typeof(ASecondLessStrictConcreteTypeListenerHandler), typeof(AThirdInheritedInterfaceListenerHandler));
     }
 
     [Fact]
     public async Task DomainEventCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await this.DomainEventPublisher.Publish(new SomeDomainEvent("Raised by me"));
+        await DomainEventPublisher.Publish(new SomeDomainEvent("Raised by me"));
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SomeDomainEvent>),
             typeof(ASecondlyExecutedGenericTypedDomainEventMiddleware<SomeDomainEvent>),

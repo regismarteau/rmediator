@@ -14,9 +14,9 @@ public class BaseTests
 {
     public BaseTests()
     {
-        this.Services = Initialize(new ServiceCollection()
+        Services = Initialize(new ServiceCollection()
             .AddDispatcher(o => o
-                .ScanAssemblies(this.GetType().Assembly)
+                .ScanAssemblies(GetType().Assembly)
                 .AddMiddlewares(
                     typeof(AFirstlyExecutedGeneralMiddleware<>),
                     typeof(AFirstlyExecutedGeneralMiddleware<,>),

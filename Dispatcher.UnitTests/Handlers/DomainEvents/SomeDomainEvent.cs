@@ -1,6 +1,5 @@
 ﻿using Dispatcher.DomainEvents;
 using Dispatcher.Middlewares;
-using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.DomainEvents;

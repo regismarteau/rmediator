@@ -9,12 +9,12 @@ public interface IDispatchQuery
 
 public interface IQuery<out TResponse> : IRequest<TResponse>;
 
-public interface IHandleQuery<in TQuery, TResponse>: IHandleRequest<TResponse> where TQuery : IQuery<TResponse>
+public interface IHandleQuery<in TQuery, TResponse> : IHandleRequest<TResponse> where TQuery : IQuery<TResponse>
 {
     public Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken);
 
     async Task<TResponse> IHandleRequest<TResponse>.Handle(IRequest<TResponse> request, CancellationToken cancellationToken)
     {
-        return await this.Handle((TQuery)request, cancellationToken);
+        return await Handle((TQuery)request, cancellationToken);
     }
 }

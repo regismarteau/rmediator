@@ -18,7 +18,7 @@ public interface IHandleCommand<in TCommand> : IHandleRequest where TCommand : I
 
     async Task IHandleRequest.Handle(IRequest request, CancellationToken cancellationToken)
     {
-        await this.Handle((TCommand)request, cancellationToken);
+        await Handle((TCommand)request, cancellationToken);
     }
 }
 
@@ -28,6 +28,6 @@ public interface IHandleCommand<in TCommand, TResult> : IHandleRequest<TResult> 
 
     async Task<TResult> IHandleRequest<TResult>.Handle(IRequest<TResult> request, CancellationToken cancellationToken)
     {
-        return await this.Handle((TCommand)request, cancellationToken);
+        return await Handle((TCommand)request, cancellationToken);
     }
 }

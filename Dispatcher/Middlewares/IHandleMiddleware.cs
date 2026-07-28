@@ -8,7 +8,7 @@ public interface IHandleMiddleware<in TRequest, TResponse> : IAbstractMiddleware
 
     Task<TResponse> IAbstractMiddlewareHandler<TResponse>.Handle(IRequest<TResponse> request, NextMiddleware<TResponse> next, CancellationToken cancellationToken)
     {
-        return this.Handle((TRequest)request, next, cancellationToken);
+        return Handle((TRequest)request, next, cancellationToken);
     }
 }
 
@@ -18,6 +18,6 @@ public interface IHandleMiddleware<in TRequest> : IAbstractMiddlewareHandler whe
 
     Task IAbstractMiddlewareHandler.Handle(IRequest request, NextMiddleware next, CancellationToken cancellationToken)
     {
-        return this.Handle((TRequest)request, next, cancellationToken);
+        return Handle((TRequest)request, next, cancellationToken);
     }
 }

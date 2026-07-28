@@ -1,6 +1,4 @@
-﻿using Dispatcher.DomainEvents;
-
-namespace Dispatcher.UnitTests.Handlers.DomainEvents;
+﻿namespace Dispatcher.UnitTests.Handlers.DomainEvents;
 
 public class DomainEventListened
 {
@@ -12,11 +10,11 @@ public class DomainEventListened
 
     public void RaiseBy(string requester)
     {
-        this.RaisedBy = requester;
+        RaisedBy = requester;
     }
 
     public void Listen(Type listener)
     {
-        this.ListenedBy.Add(listener);
+        ListenedBy.Add(listener);
     }
 }

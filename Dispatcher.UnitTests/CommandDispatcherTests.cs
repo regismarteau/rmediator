@@ -1,6 +1,5 @@
 ﻿using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
-using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -43,7 +42,7 @@ public class CommandDispatcherTests : BaseTests
     [Fact]
     public async Task CommandCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await this.CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
+        await CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithMiddlewares>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithMiddlewares>),
@@ -53,7 +52,7 @@ public class CommandDispatcherTests : BaseTests
     [Fact]
     public async Task CommandWithResultCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await this.CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
+        await CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
