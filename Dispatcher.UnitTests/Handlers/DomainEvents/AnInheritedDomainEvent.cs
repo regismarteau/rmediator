@@ -34,3 +34,12 @@ public class AThirdInheritedInterfaceListenerHandler(DomainEventListened domainE
         return Task.CompletedTask;
     }
 }
+
+public class AFourthGenericListenerHandler<TDomainEvent>(DomainEventListened domainEvents) : IListenToDomainEvent<TDomainEvent> where TDomainEvent : ABaseTypeDomainEvent
+{
+    public Task Listen(TDomainEvent @event, CancellationToken cancellationToken)
+    {
+        domainEvents.Listen(GetType());
+        return Task.CompletedTask;
+    }
+}

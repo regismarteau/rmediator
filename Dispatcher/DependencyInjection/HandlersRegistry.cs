@@ -26,9 +26,9 @@ internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadO
             .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
 }
 
-internal class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)
+internal class HandlerDefinition(Type handledType, Type interfaceService, Type concreteType)
 {
     public Type HandledType { get; } = handledType;
-    public Type HandledInterface { get; } = handledInterface;
-    public Type HandledConcreteType { get; } = handledConcreteType;
+    public Type InterfaceService { get; } = interfaceService;
+    public Type ConcreteType { get; } = concreteType;
 }

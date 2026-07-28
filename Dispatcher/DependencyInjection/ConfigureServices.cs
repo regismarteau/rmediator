@@ -44,12 +44,15 @@ public static class ConfigureServices
         public IServiceCollection Build(IServiceCollection services)
         {
             var registry = new HandlersRegistry(assemblies, middlewares);
+            services.AddSingleton(registry);
+            AddHandlers(services, registry);
+            AddMiddlewares(services, registry);
 
-            foreach (HandlerDefinition definition in registry.HandlerDefinitions)
-            {
-                services.AddTransient(definition.HandledInterface, definition.HandledConcreteType);
-            }
+            return services;
+        }
 
+        private void AddMiddlewares(IServiceCollection services, HandlersRegistry registry)
+        {
             foreach (var definition in middlewares.SelectMany(type => type
                 .GetInterfaces()
                 .Where(i => i.IsAMiddleware())
@@ -60,9 +63,18 @@ public static class ConfigureServices
                     definition.InterfaceServiceType,
                     definition.ConcreteType);
             }
+        }
 
-            return services
-                .AddSingleton(registry);
+        private static void AddHandlers(IServiceCollection services, HandlersRegistry registry)
+        {
+            foreach (HandlerDefinition definition in registry.HandlerDefinitions)
+            {
+                services.AddTransient(
+                    definition.ConcreteType.IsGenericType ?
+                    definition.InterfaceService.GetGenericTypeDefinition() :
+                    definition.InterfaceService,
+                    definition.ConcreteType);
+            }
         }
     }
 }

@@ -26,9 +26,9 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
     private async Task ExecuteHandlers<TDomainEvent>(TDomainEvent @event, IReadOnlyCollection<HandlerDefinition> handlers, CancellationToken cancellationToken) where TDomainEvent : IDomainEvent
     {
         foreach (var handler in handlers.SelectMany(h => services
-            .GetServices(h.HandledInterface))
+            .GetServices(h.InterfaceService))
             .Where(h => h is not null)
-            .DistinctBy(h => h!.GetType()))
+            .DistinctBy(h => h!.GetType().IsGenericType ? h.GetType().GetGenericTypeDefinition() : h.GetType()))
         {
             await ((IListenToDomainEvent<TDomainEvent>)handler!).Listen(@event, cancellationToken);
         }

@@ -23,7 +23,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
         var middlewareServices = GetMiddlewareServicesFor(request);
 
         await middlewareServices
-            .Wrap(((IHandleRequest)services.GetRequiredService(handler.HandledInterface)).Handle)
+            .Wrap(((IHandleRequest)services.GetRequiredService(handler.InterfaceService)).Handle)
             .Invoke(request, cancellationToken);
     }
 
@@ -31,14 +31,14 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
     {
         var middlewareServices = registry.MiddlewareHandlersDefinition
             .Where(t => t.HandledType.IsAssignableFrom(request.GetType()))
-            .SelectMany(h => services.GetServices(h.HandledInterface.GetGenericTypeDefinition().MakeGenericType(request.GetType(), typeof(TResponse))))
+            .SelectMany(h => services.GetServices(h.InterfaceService.GetGenericTypeDefinition().MakeGenericType(request.GetType(), typeof(TResponse))))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler<TResponse>>()
             .ToList();
 
         return await middlewareServices
-            .Wrap(((IHandleRequest<TResponse>)services.GetRequiredService(handler.HandledInterface)).Handle)
+            .Wrap(((IHandleRequest<TResponse>)services.GetRequiredService(handler.InterfaceService)).Handle)
             .Invoke(request, cancellationToken);
     }
 
@@ -46,7 +46,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
     {
         return [.. registry.MiddlewareHandlersDefinition
             .Where(t => t.HandledType.IsAssignableFrom(request.GetType()))
-            .SelectMany(h => services.GetServices(h.HandledInterface.GetGenericTypeDefinition().MakeGenericType(request.GetType())))
+            .SelectMany(h => services.GetServices(h.InterfaceService.GetGenericTypeDefinition().MakeGenericType(request.GetType())))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler>()];
