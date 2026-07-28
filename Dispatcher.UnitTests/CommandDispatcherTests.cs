@@ -34,7 +34,7 @@ public class CommandDispatcherTests : BaseTests
     {
         var token = new CancellationTokenSource();
         await Task.WhenAll(
-            Task.Factory.StartNew(async () => await CommandDispatcher.Dispatch(new ACancellableCommand(), token.Token), TestContext.Current.CancellationToken),
+            Task.Run(async () => await CommandDispatcher.Dispatch(new ACancellableCommand(), token.Token), TestContext.Current.CancellationToken),
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
         Check.That(GetService<CommandTriggered>().HasBeenTriggered).IsFalse();
     }

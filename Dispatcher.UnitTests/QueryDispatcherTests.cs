@@ -28,9 +28,10 @@ public class QueryDispatcherTests : BaseTests
         var token = new CancellationTokenSource();
         ACancellableQueryResponse? response = null;
         await Task.WhenAll(
-            Task.Factory.StartNew(async () => response = await QueryDispatcher.Dispatch(new ACancellableQuery(), token.Token), TestContext.Current.CancellationToken),
+            Task.Run(async () => response = await QueryDispatcher.Dispatch(new ACancellableQuery(), token.Token), TestContext.Current.CancellationToken),
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
-        Check.That(response?.HasBeenCanceled ?? false).IsTrue();
+
+        Check.That(response?.HasBeenCanceled).Is(true);
     }
 
     [Fact]
