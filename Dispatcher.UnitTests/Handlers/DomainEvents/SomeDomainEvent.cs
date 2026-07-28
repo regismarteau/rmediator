@@ -1,5 +1,4 @@
-﻿using Dispatcher.DomainEvents;
-using Dispatcher.Middlewares;
+﻿using Dispatcher.Abstractions;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.DomainEvents;

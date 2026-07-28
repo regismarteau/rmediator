@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.Middlewares;
+﻿namespace Dispatcher.Abstractions;
 
 public interface IHandleMiddleware<in TRequest, TResponse> : IAbstractMiddlewareHandler<TResponse> where TRequest : IRequest<TResponse>
 {

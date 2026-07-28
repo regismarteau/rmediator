@@ -1,5 +1,4 @@
-﻿using Dispatcher.Middlewares;
-using Dispatcher.Queries;
+﻿using Dispatcher.Abstractions;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 
 namespace Dispatcher.UnitTests.Handlers.Queries;

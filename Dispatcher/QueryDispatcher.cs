@@ -1,7 +1,7 @@
-﻿using Dispatcher.DependencyInjection;
-using Dispatcher.Requests;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.DependencyInjection;
 
-namespace Dispatcher.Queries;
+namespace Dispatcher;
 
 internal class QueryDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchQuery
 {

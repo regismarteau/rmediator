@@ -1,7 +1,7 @@
-﻿using Dispatcher.DependencyInjection;
-using Dispatcher.Requests;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.DependencyInjection;
 
-namespace Dispatcher.Commands;
+namespace Dispatcher;
 
 internal class CommandDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchCommand
 {

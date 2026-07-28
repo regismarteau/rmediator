@@ -3,6 +3,7 @@
     <File Path=".github/workflows/ci.yml" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Project Path="Dispatcher.Abstractions/Dispatcher.Abstractions.csproj" Id="02713a82-6506-4ce1-b503-82c0355d668f" />
   <Project Path="Dispatcher.UnitTests/Dispatcher.UnitTests.csproj" Id="69f566de-2d59-4c34-a225-031945e0a65c" />
   <Project Path="Dispatcher/Dispatcher.csproj" />
 </Solution>

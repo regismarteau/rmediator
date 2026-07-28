@@ -1,4 +1,4 @@
-﻿using Dispatcher.Middlewares;
+﻿using Dispatcher.Abstractions;
 
 namespace Dispatcher.Extensions;
 

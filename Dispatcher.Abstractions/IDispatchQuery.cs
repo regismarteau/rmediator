@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.Queries;
+﻿namespace Dispatcher.Abstractions;
 
 public interface IDispatchQuery
 {

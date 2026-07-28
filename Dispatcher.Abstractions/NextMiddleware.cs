@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.Middlewares;
+﻿namespace Dispatcher.Abstractions;
 
 public delegate Task<TResponse> NextMiddleware<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken);
 

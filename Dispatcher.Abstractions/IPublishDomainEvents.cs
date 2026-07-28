@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.DomainEvents;
+﻿namespace Dispatcher.Abstractions;
 
 public interface IPublishDomainEvents
 {

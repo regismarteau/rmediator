@@ -1,9 +1,9 @@
-﻿using Dispatcher.DependencyInjection;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.DependencyInjection;
 using Dispatcher.Extensions;
-using Dispatcher.Requests;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dispatcher.DomainEvents;
+namespace Dispatcher;
 
 internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IPublishDomainEvents
 {

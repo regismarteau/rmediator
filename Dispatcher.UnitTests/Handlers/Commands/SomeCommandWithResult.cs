@@ -1,4 +1,4 @@
-﻿using Dispatcher.Commands;
+﻿using Dispatcher.Abstractions;
 
 namespace Dispatcher.UnitTests.Handlers.Commands;
 

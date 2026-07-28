@@ -1,4 +1,4 @@
-﻿using Dispatcher.DomainEvents;
+﻿using Dispatcher.Abstractions;
 
 namespace Dispatcher.UnitTests.Handlers.DomainEvents;
 

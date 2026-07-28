@@ -1,9 +1,9 @@
-﻿using Dispatcher.DependencyInjection;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.DependencyInjection;
 using Dispatcher.Extensions;
-using Dispatcher.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dispatcher.Requests;
+namespace Dispatcher;
 
 internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider services)
 {

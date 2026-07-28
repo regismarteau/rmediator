@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.Commands;
+﻿namespace Dispatcher.Abstractions;
 
 public interface IDispatchCommand
 {

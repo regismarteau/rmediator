@@ -1,7 +1,5 @@
-﻿using Dispatcher.Commands;
-using Dispatcher.DomainEvents;
+﻿using Dispatcher.Abstractions;
 using Dispatcher.Extensions;
-using Dispatcher.Queries;
 using System.Reflection;
 
 namespace Dispatcher.DependencyInjection;

@@ -1,7 +1,5 @@
-﻿using Dispatcher.Commands;
+﻿using Dispatcher.Abstractions;
 using Dispatcher.DependencyInjection;
-using Dispatcher.DomainEvents;
-using Dispatcher.Queries;
 using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.DomainEvents;
 using Dispatcher.UnitTests.Handlers.Middlewares;

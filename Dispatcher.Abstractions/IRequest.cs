@@ -1,4 +1,4 @@
-﻿namespace Dispatcher.Requests;
+﻿namespace Dispatcher.Abstractions;
 
 public interface IRequest;
 

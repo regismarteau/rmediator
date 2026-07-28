@@ -10,4 +10,8 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Dispatcher.Abstractions\Dispatcher.Abstractions.csproj" />
+	</ItemGroup>
+
 </Project>
