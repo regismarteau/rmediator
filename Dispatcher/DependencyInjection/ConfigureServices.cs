@@ -1,5 +1,6 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.DomainEvents;
+using Dispatcher.Extensions;
 using Dispatcher.Middlewares;
 using Dispatcher.Queries;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,7 +54,7 @@ public static class ConfigureServices
             foreach (var type in this.middlewares)
             {
                 foreach (var serviceType in type.GetInterfaces()
-                    .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>) || i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>))))
+                    .Where(i => i.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>))))
                 {
                     services.AddTransient(type.IsGenericType ? serviceType.GetGenericTypeDefinition() : serviceType, type);
                 }

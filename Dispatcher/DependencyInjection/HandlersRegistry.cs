@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Dispatcher.DependencyInjection;
 
-public class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadOnlyCollection<Type> middlewareTypes)
+internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadOnlyCollection<Type> middlewareTypes)
 {
     private static readonly IReadOnlyCollection<Type> HandlerServiceTypes = [
         typeof(IHandleQuery<,>),
@@ -27,7 +27,7 @@ public class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadOnl
             .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
 }
 
-public class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)
+internal class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)
 {
     public Type HandledType { get; } = handledType;
     public Type HandledInterface { get; } = handledInterface;

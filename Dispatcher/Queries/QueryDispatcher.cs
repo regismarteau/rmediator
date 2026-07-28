@@ -3,7 +3,7 @@ using Dispatcher.Requests;
 
 namespace Dispatcher.Queries;
 
-public class QueryDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchQuery
+internal class QueryDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchQuery
 {
     public async Task<TResponse> Dispatch<TResponse>(IQuery<TResponse> query, CancellationToken? cancellationToken = default)
     {

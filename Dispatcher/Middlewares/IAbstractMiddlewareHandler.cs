@@ -2,32 +2,32 @@
 
 namespace Dispatcher.Middlewares;
 
-public interface IHandleMiddleware<in TRequest, TResponse> : IInternalHandleMiddleware<TResponse> where TRequest : IRequest<TResponse>
+public interface IHandleMiddleware<in TRequest, TResponse> : IAbstractMiddlewareHandler<TResponse> where TRequest : IRequest<TResponse>
 {
     Task<TResponse> Handle(TRequest request, NextMiddleware<TResponse> next, CancellationToken cancellationToken);
 
-    Task<TResponse> IInternalHandleMiddleware<TResponse>.Handle(IRequest<TResponse> request, NextMiddleware<TResponse> next, CancellationToken cancellationToken)
+    Task<TResponse> IAbstractMiddlewareHandler<TResponse>.Handle(IRequest<TResponse> request, NextMiddleware<TResponse> next, CancellationToken cancellationToken)
     {
         return this.Handle((TRequest)request, next, cancellationToken);
     }
 }
 
-public interface IHandleMiddleware<in TRequest> : IInternalHandleMiddleware where TRequest : IRequest
+public interface IHandleMiddleware<in TRequest> : IAbstractMiddlewareHandler where TRequest : IRequest
 {
     Task Handle(TRequest request, NextMiddleware next, CancellationToken cancellationToken);
 
-    Task IInternalHandleMiddleware.Handle(IRequest request, NextMiddleware next, CancellationToken cancellationToken)
+    Task IAbstractMiddlewareHandler.Handle(IRequest request, NextMiddleware next, CancellationToken cancellationToken)
     {
         return this.Handle((TRequest)request, next, cancellationToken);
     }
 }
 
-public interface IInternalHandleMiddleware<TResponse>
+public interface IAbstractMiddlewareHandler<TResponse>
 {
     Task<TResponse> Handle(IRequest<TResponse> request, NextMiddleware<TResponse> next, CancellationToken cancellationToken);
 }
 
-public interface IInternalHandleMiddleware
+public interface IAbstractMiddlewareHandler
 {
     Task Handle(IRequest request, NextMiddleware next, CancellationToken cancellationToken);
 }

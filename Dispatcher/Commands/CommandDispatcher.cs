@@ -3,7 +3,7 @@ using Dispatcher.Requests;
 
 namespace Dispatcher.Commands;
 
-public class CommandDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchCommand
+internal class CommandDispatcher(HandlersRegistry registry, IServiceProvider services) : BaseRequestDispatcher(registry, services), IDispatchCommand
 {
     public async Task Dispatch<TCommand>(TCommand command, CancellationToken? cancellationToken = null) where TCommand : ICommand
     {
