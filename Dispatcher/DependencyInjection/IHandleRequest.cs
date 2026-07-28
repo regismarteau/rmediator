@@ -1,6 +1,8 @@
-﻿namespace Dispatcher.DependencyInjection;
+﻿using Dispatcher.Requests;
 
-public interface IHandleRequest
+namespace Dispatcher.DependencyInjection;
+
+public interface IHandleRequest<TResponse>
 {
-    public Task<object> Handle(object request, CancellationToken cancellationToken);
+    public Task<TResponse> Handle(IRequest<TResponse> request, CancellationToken cancellationToken);
 }

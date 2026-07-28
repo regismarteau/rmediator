@@ -31,4 +31,11 @@ public class QueryDispatcherTests : BaseTests
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
         Check.That(response?.HasBeenCanceled ?? false).IsTrue();
     }
+
+    [Fact]
+    public async Task CorrespondingMiddlewaresAreExecuted()
+    {
+        await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
+        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(typeof(AFirstStronglyTypedQueryMiddleware));
+    }
 }

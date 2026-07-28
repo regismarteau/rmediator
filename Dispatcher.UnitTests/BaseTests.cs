@@ -2,6 +2,7 @@
 using Dispatcher.DependencyInjection;
 using Dispatcher.DomainEvents;
 using Dispatcher.Queries;
+using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dispatcher.UnitTests;
@@ -12,7 +13,10 @@ public class BaseTests
     public BaseTests()
     {
         this.Services = Initialize(new ServiceCollection()
-            .AddDispatcher(o => o.WithAssemblies(this.GetType().Assembly)))
+            .AddDispatcher(o => o
+                .ScanAssemblies(this.GetType().Assembly)
+                .WithMiddlewares(typeof(AFirstStronglyTypedQueryMiddleware)))
+            .AddSingleton<ExecutedMiddlewares>())
             .BuildServiceProvider(true);
     }
 
@@ -25,6 +29,8 @@ public class BaseTests
     protected IDispatchCommand CommandDispatcher => GetService<IDispatchCommand>();
 
     protected IPublishDomainEvents DomainEventPublisher => GetService<IPublishDomainEvents>();
+
+    protected ExecutedMiddlewares ExecutedMiddlewares => GetService<ExecutedMiddlewares>();
 
     protected T GetService<T>() where T : notnull
     {

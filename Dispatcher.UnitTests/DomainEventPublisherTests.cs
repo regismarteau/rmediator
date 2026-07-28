@@ -33,7 +33,7 @@ public class DomainEventPublisherTests : BaseTests
     [Fact]
     public async Task ListenersHandleDomainEventsInheritance()
     {
-        await this.DomainEventPublisher.Publish(new AStronglyTypedDomainEvent());
+        await this.DomainEventPublisher.Publish(new AnInheritedDomainEvent());
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(AFirstStronglyTypedListenerHandler), typeof(ASecondLessStrictConcreteTypeListenerHandler), typeof(AThirdInheritedInterfaceListenerHandler));
     }
 }

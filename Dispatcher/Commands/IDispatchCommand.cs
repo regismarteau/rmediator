@@ -1,27 +1,28 @@
 ﻿using Dispatcher.DependencyInjection;
+using Dispatcher.Requests;
 
 namespace Dispatcher.Commands;
 
 public interface IDispatchCommand
 {
     Task Dispatch<TCommand>(TCommand command, CancellationToken? cancellationToken = null) where TCommand : ICommand;
-    Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken? cancellationToken = null);
+    Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken? cancellationToken = null) ;
 }
 
-public interface ICommand;
+public interface ICommand : IRequest;
 
-public interface ICommand<TResult>;
+public interface ICommand<TResult> : IRequest<TResult>;
 
-public interface IHandleCommand<TCommand> where TCommand : ICommand
+public interface IHandleCommand<in TCommand> where TCommand : ICommand
 {
     public Task Handle(TCommand command, CancellationToken cancellationToken);
 }
 
-public interface IHandleCommand<TCommand, TResult> : IHandleRequest where TCommand : ICommand<TResult> where TResult : notnull
+public interface IHandleCommand<in TCommand, TResult> : IHandleRequest<TResult> where TCommand : ICommand<TResult>
 {
     public Task<TResult> Handle(TCommand command, CancellationToken cancellationToken);
 
-    async Task<object> IHandleRequest.Handle(object request, CancellationToken cancellationToken)
+    async Task<TResult> IHandleRequest<TResult>.Handle(IRequest<TResult> request, CancellationToken cancellationToken)
     {
         return await this.Handle((TCommand)request, cancellationToken);
     }

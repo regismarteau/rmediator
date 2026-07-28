@@ -24,7 +24,7 @@ public class CommandDispatcher(HandlersRegistry registry, IServiceProvider servi
             throw new InvalidOperationException($"There is no unique handler for command {command.GetType().Name}");
         }
 
-        return (TResult)await ((IHandleRequest)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
+        return await ((IHandleRequest<TResult>)services.GetRequiredService(handlers.First().HandledInterface)).Handle(command, cancellationToken ?? CancellationToken.None);
     }
 
     private IReadOnlyCollection<HandlerDefinition> FindHandlersBy(object command)

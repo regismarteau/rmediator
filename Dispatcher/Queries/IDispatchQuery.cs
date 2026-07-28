@@ -1,4 +1,5 @@
 ﻿using Dispatcher.DependencyInjection;
+using Dispatcher.Requests;
 
 namespace Dispatcher.Queries;
 
@@ -7,13 +8,13 @@ public interface IDispatchQuery
     Task<TResponse> Dispatch<TResponse>(IQuery<TResponse> query, CancellationToken? cancellationToken = default);
 }
 
-public interface IQuery<TResponse>;
+public interface IQuery<out TResponse> : IRequest<TResponse>;
 
-public interface IHandleQuery<TQuery, TResponse> : IHandleRequest where TQuery : IQuery<TResponse> where TResponse : notnull
+public interface IHandleQuery<in TQuery, TResponse>: IHandleRequest<TResponse> where TQuery : IQuery<TResponse>
 {
     public Task<TResponse> Handle(TQuery query, CancellationToken cancellationToken);
 
-    async Task<object> IHandleRequest.Handle(object request, CancellationToken cancellationToken)
+    async Task<TResponse> IHandleRequest<TResponse>.Handle(IRequest<TResponse> request, CancellationToken cancellationToken)
     {
         return await this.Handle((TQuery)request, cancellationToken);
     }

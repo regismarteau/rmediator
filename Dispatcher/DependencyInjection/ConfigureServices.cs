@@ -1,5 +1,6 @@
 ﻿using Dispatcher.Commands;
 using Dispatcher.DomainEvents;
+using Dispatcher.Middlewares;
 using Dispatcher.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -26,20 +27,35 @@ public static class ConfigureServices
     public class ConfigureServicesOptionsBuilder
     {
         private IReadOnlyCollection<Assembly> assemblies = [];
+        private List<Type> middlewares = [];
 
-        public ConfigureServicesOptionsBuilder WithAssemblies(params Assembly[] assemblies)
+        public ConfigureServicesOptionsBuilder ScanAssemblies(params Assembly[] assemblies)
         {
             this.assemblies = assemblies;
             return this;
         }
 
+        public ConfigureServicesOptionsBuilder WithMiddlewares(params Type[] middlewares)
+        {
+            this.middlewares.AddRange(middlewares.Where(m => m.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>))));
+            return this;
+        }
+
         public IServiceCollection Build(IServiceCollection services)
         {
-            var registry = new HandlersRegistry(this.assemblies);
+            var registry = new HandlersRegistry(this.assemblies, this.middlewares);
 
             foreach (HandlerDefinition definition in registry.AllDefinitions)
             {
                 services.AddTransient(definition.HandledInterface, definition.HandledConcreteType);
+            }
+
+            foreach (var type in this.middlewares)
+            {
+                foreach(var serviceType in type.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>)))
+                {
+                    services.AddTransient(serviceType, type);
+                }
             }
 
             return services
