@@ -1,6 +1,4 @@
-﻿using Dispatcher.Requests;
-
-namespace Dispatcher.DependencyInjection;
+﻿namespace Dispatcher.Requests;
 
 public interface IHandleRequest<TResponse>
 {

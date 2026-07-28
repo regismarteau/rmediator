@@ -36,6 +36,8 @@ public class QueryDispatcherTests : BaseTests
     public async Task CorrespondingMiddlewaresAreExecuted()
     {
         await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
-        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(typeof(AFirstStronglyTypedQueryMiddleware));
+        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
+            typeof(AFirstStronglyTypedQueryMiddleware), 
+            typeof(ASecondGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>));
     }
 }

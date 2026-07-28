@@ -14,9 +14,9 @@ public class AQueryWithMiddlewaresHandler : IHandleQuery<AQueryWithMiddlewares, 
     }
 }
 
-public class AFirstStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<SomeQueryResponse>
+public class AFirstStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares) : IHandleMiddleware<AQueryWithMiddlewares, SomeQueryResponse>
 {
-    public async Task<SomeQueryResponse> Handle(IRequest<SomeQueryResponse> request, NextMiddleware<SomeQueryResponse> next, CancellationToken cancellationToken)
+    public async Task<SomeQueryResponse> Handle(AQueryWithMiddlewares request, NextMiddleware<SomeQueryResponse> next, CancellationToken cancellationToken)
     {
         var result = await next(request, cancellationToken);
         middlewares.MarkAsExecuted(GetType());
@@ -24,15 +24,15 @@ public class AFirstStronglyTypedQueryMiddleware(ExecutedMiddlewares middlewares)
     }
 }
 
-//public class ASecondLessStronglyTypedQueryMiddleware<TResponse>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TResponse>
-//{
-//    public async Task<TResponse> Handle(IRequest<TResponse> request, NextMiddleware next, CancellationToken cancellationToken)
-//    {
-//        var result = await next(request, cancellationToken);
-//        middlewares.MarkAsExecuted(GetType());
-//        return result;
-//    }
-//}
+public class ASecondGenericTypedQueryMiddleware<TQuery, TResponse>(ExecutedMiddlewares middlewares) : IHandleMiddleware<TQuery, TResponse> where TQuery : IRequest<TResponse>
+{
+    public async Task<TResponse> Handle(TQuery request, NextMiddleware<TResponse> next, CancellationToken cancellationToken)
+    {
+        var result = await next(request, cancellationToken);
+        middlewares.MarkAsExecuted(GetType());
+        return result;
+    }
+}
 
 public class ExecutedMiddlewares
 {

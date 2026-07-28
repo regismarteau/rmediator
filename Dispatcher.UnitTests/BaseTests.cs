@@ -15,7 +15,9 @@ public class BaseTests
         this.Services = Initialize(new ServiceCollection()
             .AddDispatcher(o => o
                 .ScanAssemblies(this.GetType().Assembly)
-                .WithMiddlewares(typeof(AFirstStronglyTypedQueryMiddleware)))
+                .WithMiddlewares(
+                    typeof(AFirstStronglyTypedQueryMiddleware), 
+                    typeof(ASecondGenericTypedQueryMiddleware<,>)))
             .AddSingleton<ExecutedMiddlewares>())
             .BuildServiceProvider(true);
     }

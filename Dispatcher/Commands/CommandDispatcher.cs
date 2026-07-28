@@ -1,4 +1,5 @@
 ﻿using Dispatcher.DependencyInjection;
+using Dispatcher.Requests;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dispatcher.Commands;

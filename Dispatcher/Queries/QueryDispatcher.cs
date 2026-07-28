@@ -1,5 +1,6 @@
 ﻿using Dispatcher.DependencyInjection;
 using Dispatcher.Middlewares;
+using Dispatcher.Requests;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Dispatcher.Queries;
@@ -17,7 +18,7 @@ public class QueryDispatcher(HandlersRegistry registry, IServiceProvider service
         var middlewares = registry.MiddlewareHandlersDefinition.Where(t => t.HandledType.IsAssignableFrom(query.GetType())).ToList();
         var serviceType = handlers.First().HandledInterface;
         var implem = middlewares.SelectMany(h => services
-            .GetServices(h.HandledInterface))
+            .GetServices(h.HandledInterface.GetGenericTypeDefinition().MakeGenericType(query.GetType(), typeof(TResponse))))
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType())
             .OfType<IHandleMiddleware<TResponse>>()
@@ -35,7 +36,7 @@ public class QueryDispatcher(HandlersRegistry registry, IServiceProvider service
     {
         if (index == middlewares.Count - 1)
         {
-            return async (query, token) => await ((IHandleRequest<TResponse>)services.GetRequiredService(serviceType)).Handle((IQuery<TResponse>)query, token);
+            return async (query, token) => await ((IHandleRequest<TResponse>)services.GetRequiredService(serviceType)).Handle(query, token);
         }
         return async (query, token) => await middlewares.ElementAt(index + 1).Handle(query, GetNextMiddleware(middlewares, index + 1, serviceType), token);
     }

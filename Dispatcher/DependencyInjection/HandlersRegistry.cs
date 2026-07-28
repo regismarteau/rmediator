@@ -30,7 +30,7 @@ public class HandlersRegistry
 
         this.MiddlewareHandlersDefinition = [.. middlewareTypes
             .SelectMany(m => m.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>))
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>))
                 .Select(i => new HandlerDefinition(typeof(IRequest), i, m)))];
     }
 

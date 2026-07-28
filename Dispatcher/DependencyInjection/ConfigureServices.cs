@@ -37,7 +37,7 @@ public static class ConfigureServices
 
         public ConfigureServicesOptionsBuilder WithMiddlewares(params Type[] middlewares)
         {
-            this.middlewares.AddRange(middlewares.Where(m => m.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>))));
+            this.middlewares.AddRange(middlewares.Where(m => m.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>))));
             return this;
         }
 
@@ -52,9 +52,10 @@ public static class ConfigureServices
 
             foreach (var type in this.middlewares)
             {
-                foreach(var serviceType in type.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>)))
+                foreach(var serviceType in type.GetInterfaces()
+                    .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>)))
                 {
-                    services.AddTransient(serviceType, type);
+                    services.AddTransient(type.IsGenericType ? serviceType.GetGenericTypeDefinition() : serviceType, type);
                 }
             }
 
