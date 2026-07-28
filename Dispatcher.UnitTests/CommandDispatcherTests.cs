@@ -1,4 +1,5 @@
 ﻿using Dispatcher.UnitTests.Handlers.Commands;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -36,5 +37,23 @@ public class CommandDispatcherTests : BaseTests
             Task.Factory.StartNew(async () => await CommandDispatcher.Dispatch(new ACancellableCommand(), token.Token), TestContext.Current.CancellationToken),
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
         Check.That(GetService<CommandTriggered>().HasBeenTriggered).IsFalse();
+    }
+
+    [Fact]
+    public async Task CommandCorrespondingMiddlewaresAreExecuted()
+    {
+        await this.CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
+        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
+            typeof(AStronglyTypedCommandMiddleware),
+            typeof(AGenericTypedCommandMiddleware<ACommandWithMiddlewares>));
+    }
+
+    [Fact]
+    public async Task CommandWithResultCorrespondingMiddlewaresAreExecuted()
+    {
+        await this.CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
+        Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
+            typeof(AStronglyTypedCommandWithResultMiddleware),
+            typeof(AGenericTypedCommandWithResultMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>));
     }
 }

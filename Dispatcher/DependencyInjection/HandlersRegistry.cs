@@ -2,7 +2,6 @@
 using Dispatcher.DomainEvents;
 using Dispatcher.Middlewares;
 using Dispatcher.Queries;
-using Dispatcher.Requests;
 using System.Reflection;
 
 namespace Dispatcher.DependencyInjection;
@@ -30,8 +29,8 @@ public class HandlersRegistry
 
         this.MiddlewareHandlersDefinition = [.. middlewareTypes
             .SelectMany(m => m.GetInterfaces()
-                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>))
-                .Select(i => new HandlerDefinition(typeof(IRequest), i, m)))];
+                .Where(i => i.IsGenericType && (i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>) || i.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>)))
+                .Select(i => new HandlerDefinition(i.GetGenericArguments().First(), i, m)))];
     }
 
     public IReadOnlyCollection<HandlerDefinition> QueryHandlerDefinitions { get; }
@@ -39,7 +38,7 @@ public class HandlersRegistry
     public IReadOnlyCollection<HandlerDefinition> DomainEventHandlerDefinitions { get; }
     public IReadOnlyCollection<HandlerDefinition> MiddlewareHandlersDefinition { get; }
 
-    public IEnumerable<HandlerDefinition> AllDefinitions => [.. QueryHandlerDefinitions, .. CommandHandlerDefinitions, ..DomainEventHandlerDefinitions];
+    public IEnumerable<HandlerDefinition> AllDefinitions => [.. QueryHandlerDefinitions, .. CommandHandlerDefinitions, .. DomainEventHandlerDefinitions];
 }
 
 public class HandlerDefinition(Type handledType, Type handledInterface, Type handledConcreteType)

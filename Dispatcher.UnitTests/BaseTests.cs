@@ -2,6 +2,8 @@
 using Dispatcher.DependencyInjection;
 using Dispatcher.DomainEvents;
 using Dispatcher.Queries;
+using Dispatcher.UnitTests.Handlers.Commands;
+using Dispatcher.UnitTests.Handlers.Middlewares;
 using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,8 +18,12 @@ public class BaseTests
             .AddDispatcher(o => o
                 .ScanAssemblies(this.GetType().Assembly)
                 .WithMiddlewares(
-                    typeof(AFirstStronglyTypedQueryMiddleware), 
-                    typeof(ASecondGenericTypedQueryMiddleware<,>)))
+                    typeof(AStronglyTypedQueryMiddleware),
+                    typeof(AGenericTypedQueryMiddleware<,>),
+                    typeof(AStronglyTypedCommandMiddleware),
+                    typeof(AGenericTypedCommandMiddleware<>),
+                    typeof(AStronglyTypedCommandWithResultMiddleware),
+                    typeof(AGenericTypedCommandWithResultMiddleware<,>)))
             .AddSingleton<ExecutedMiddlewares>())
             .BuildServiceProvider(true);
     }

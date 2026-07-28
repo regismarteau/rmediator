@@ -1,4 +1,5 @@
-﻿using Dispatcher.UnitTests.Handlers.Queries;
+﻿using Dispatcher.UnitTests.Handlers.Middlewares;
+using Dispatcher.UnitTests.Handlers.Queries;
 using NFluent;
 
 namespace Dispatcher.UnitTests;
@@ -37,7 +38,7 @@ public class QueryDispatcherTests : BaseTests
     {
         await this.QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
         Check.That(ExecutedMiddlewares.ExecutedTypes).IsEquivalentTo(
-            typeof(AFirstStronglyTypedQueryMiddleware), 
-            typeof(ASecondGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>));
+            typeof(AStronglyTypedQueryMiddleware), 
+            typeof(AGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>));
     }
 }
