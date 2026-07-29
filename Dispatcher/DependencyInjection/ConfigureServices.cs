@@ -1,6 +1,6 @@
 ﻿using Dispatcher.Abstractions;
-using Dispatcher.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
 
 namespace Dispatcher.DependencyInjection;
@@ -14,6 +14,11 @@ public static class ConfigureServices
             var opt = new ConfigureServicesOptionsBuilder();
             options?.Invoke(opt);
             opt.Build(services);
+
+            if (services.Any(s => s.ServiceType == typeof(IDispatchQuery)))
+            {
+                return services;
+            }
 
             return services
                 .AddTransient<IDispatchQuery, QueryDispatcher>()
@@ -41,37 +46,36 @@ public static class ConfigureServices
 
         public IServiceCollection Build(IServiceCollection services)
         {
-            var registry = new HandlersRegistry(assemblies, middlewares);
-            services.AddSingleton(registry);
-            AddHandlers(services, registry);
-            AddMiddlewares(services, registry);
+            HandlersRegistry? registry = (HandlersRegistry?)services.FirstOrDefault(s => s.ServiceType == typeof(HandlersRegistry))?.ImplementationInstance;
+            if (registry is null)
+            {
+                registry = new HandlersRegistry(assemblies, middlewares);
+                services.AddSingleton(registry);
+            }
+            else
+            {
+                registry = registry.Merge(assemblies, middlewares);
+            }
 
+            services.Replace(new ServiceDescriptor(
+                typeof(HandlersRegistry),
+                registry));
+
+            AddMissingHandlers(services, registry);
             return services;
         }
 
-        private void AddMiddlewares(IServiceCollection services, HandlersRegistry registry)
+        private static void AddMissingHandlers(IServiceCollection services, HandlersRegistry registry)
         {
-            foreach (var definition in middlewares.SelectMany(type => type
-                .GetInterfaces()
-                .Where(i => i.IsAMiddleware())
-                .Select(i => new { ConcreteType = type, InterfaceServiceType = i })))
+            foreach (HandlerDefinition definition in registry.HandlerDefinitions.Concat(registry.MiddlewareHandlersDefinition))
             {
-                services.AddTransient(definition.ConcreteType.IsGenericType ?
-                    definition.InterfaceServiceType.GetGenericTypeDefinition() :
-                    definition.InterfaceServiceType,
-                    definition.ConcreteType);
-            }
-        }
+                var existingService = services.FirstOrDefault(s => s.ServiceType == definition.RelativeToGenericConcreteTypeInterfaceService && s.ImplementationType == definition.ConcreteType);
+                if (existingService is not null)
+                {
+                    continue;
+                }
 
-        private static void AddHandlers(IServiceCollection services, HandlersRegistry registry)
-        {
-            foreach (HandlerDefinition definition in registry.HandlerDefinitions)
-            {
-                services.AddTransient(
-                    definition.ConcreteType.IsGenericType ?
-                    definition.InterfaceService.GetGenericTypeDefinition() :
-                    definition.InterfaceService,
-                    definition.ConcreteType);
+                services.AddTransient(definition.RelativeToGenericConcreteTypeInterfaceService, definition.ConcreteType);
             }
         }
     }

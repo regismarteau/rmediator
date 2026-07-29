@@ -22,11 +22,18 @@ internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadO
             .SelectMany(t => t.GetInterfaces()
             .Where(i => i.IsOfGenericType([.. HandlerServiceTypes]))
             .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
+
+    public HandlersRegistry Merge(IReadOnlyCollection<Assembly> otherAssemblies, IReadOnlyCollection<Type> otherMiddlewareTypes)
+    {
+        return new([.. assemblies.Concat(otherAssemblies).Distinct()], [.. middlewareTypes.Concat(otherMiddlewareTypes).Distinct()]);
+    }
 }
+
 
 internal class HandlerDefinition(Type handledType, Type interfaceService, Type concreteType)
 {
     public Type HandledType { get; } = handledType;
     public Type InterfaceService { get; } = interfaceService;
+    public Type RelativeToGenericConcreteTypeInterfaceService { get; } = concreteType.IsGenericType ? interfaceService.GetGenericTypeDefinition() : interfaceService;
     public Type ConcreteType { get; } = concreteType;
 }

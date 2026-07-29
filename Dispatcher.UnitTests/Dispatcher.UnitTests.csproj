@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Dispatcher.UnitTests.Handlers\Dispatcher.UnitTests.Handlers.csproj" />
     <ProjectReference Include="..\Dispatcher\Dispatcher.csproj" />
   </ItemGroup>
 
