@@ -7,31 +7,11 @@ namespace Dispatcher;
 
 internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider services)
 {
-    protected HandlerDefinition GetSingleHandler(IRequest request)
+    protected async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
     {
-        var handlers = GetHandlersFor(request);
-        if (handlers.Count != 1)
-        {
-            throw new InvalidOperationException($"There is no unique handler for {request.GetType().Name}");
-        }
-
-        return handlers.First();
-    }
-
-    protected async Task SendRequest(IRequest request, HandlerDefinition handler, CancellationToken cancellationToken)
-    {
-        var middlewareServices = GetMiddlewareServicesFor(request);
-
-        await middlewareServices
-            .Wrap(((IHandleRequest<IRequest>)services.GetRequiredService(handler.InterfaceService)).Handle)
-            .Invoke(request, cancellationToken);
-    }
-
-    protected async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, HandlerDefinition handler, CancellationToken cancellationToken)
-    {
+        var handler = GetSingleHandler(request);
         var middlewareServices = services.GetServices(typeof(IHandleMiddleware<,>).MakeGenericType(request.GetType(), typeof(TResponse)))
             .Where(h => h is not null)
-            .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler<TResponse>>()
             .ToList();
 
@@ -44,8 +24,18 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
     {
         return [.. services.GetServices(typeof(IHandleMiddleware<>).MakeGenericType(request.GetType()))
             .Where(h => h is not null)
-            .DistinctBy(h => h!.GetType())
             .OfType<IAbstractMiddlewareHandler>()];
+    }
+
+    protected HandlerDefinition GetSingleHandler(IRequest request)
+    {
+        var handlers = GetHandlersFor(request);
+        if (handlers.Count != 1)
+        {
+            throw new InvalidOperationException($"There is no unique handler for {request.GetType().Name}");
+        }
+
+        return handlers.First();
     }
 
     protected IReadOnlyCollection<HandlerDefinition> GetHandlersFor(IRequest request)

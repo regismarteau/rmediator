@@ -2,12 +2,14 @@
 
 namespace Dispatcher.UnitTests.Handlers.Commands;
 
-public record ACancellableCommand : ICommand;
+public record ACancellableCommand(string RequestedBy) : ICommand;
 
 public class ACancellableCommandHandler(CommandTriggered commandTrigger) : IHandleCommand<ACancellableCommand>
 {
     public async Task Handle(ACancellableCommand command, CancellationToken cancellationToken)
     {
+
+        commandTrigger.TriggerBy(command.RequestedBy);
         try
         {
             var semaphore = new SemaphoreSlim(0);
@@ -17,7 +19,6 @@ public class ACancellableCommandHandler(CommandTriggered commandTrigger) : IHand
         {
             return;
         }
-
-        commandTrigger.TriggerBy("Should not happen");
+        commandTrigger.Complete();
     }
 }

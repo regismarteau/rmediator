@@ -4,6 +4,8 @@ namespace Dispatcher.UnitTests.Handlers.Queries;
 
 public record SomeQuery(string RequestedBy) : IQuery<SomeQueryResponse>;
 
+public record SomeSubQuery(string RequestedBy) : SomeQuery(RequestedBy);
+
 public record SomeQueryResponse(string Value);
 
 public class SomeQueryHandler : IHandleQuery<SomeQuery, SomeQueryResponse>

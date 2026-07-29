@@ -21,6 +21,6 @@ internal class CommandDispatcher(HandlersRegistry registry, IServiceProvider ser
 
     public async Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken? cancellationToken = null)
     {
-        return await SendRequest(command, GetSingleHandler(command), cancellationToken ?? CancellationToken.None);
+        return await SendRequest(command, cancellationToken ?? CancellationToken.None);
     }
 }

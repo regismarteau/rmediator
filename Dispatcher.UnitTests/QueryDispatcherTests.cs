@@ -8,11 +8,18 @@ public class QueryDispatcherTests : BaseTests
 {
     [Theory]
     [InlineData("someone")]
-    [InlineData("another one")]
+    [InlineData("another guy")]
     public async Task ShouldReturnSomeResponse(string requestedBy)
     {
         var response = await QueryDispatcher.Dispatch(new SomeQuery(requestedBy));
         Check.That(response.Value).Is($"Some response for {requestedBy}!");
+    }
+
+    [Fact]
+    public async Task ASubQueryCanTriggerAnHandler()
+    {
+        var response = await QueryDispatcher.Dispatch(new SomeSubQuery("me"));
+        Check.That(response.Value).Is("Some response for me!");
     }
 
     [Fact]

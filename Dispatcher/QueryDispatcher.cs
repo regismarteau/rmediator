@@ -7,6 +7,6 @@ internal class QueryDispatcher(HandlersRegistry registry, IServiceProvider servi
 {
     public async Task<TResponse> Dispatch<TResponse>(IQuery<TResponse> query, CancellationToken? cancellationToken = default)
     {
-        return await SendRequest(query, GetSingleHandler(query), cancellationToken ?? CancellationToken.None);
+        return await SendRequest(query, cancellationToken ?? CancellationToken.None);
     }
 }

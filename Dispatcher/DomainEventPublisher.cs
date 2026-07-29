@@ -11,26 +11,35 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
 
     public async Task Publish(IDomainEvent @event, CancellationToken? cancellationToken = null)
     {
-        IReadOnlyCollection<HandlerDefinition> handlers = GetHandlersFor(@event);
+        var handlers = GetHandlersFor(@event)
+            .DistinctBy(handler => handler.InterfaceService)
+            .SelectMany(handler => services
+                .GetServices(handler.InterfaceService)
+                .Where(service => service is not null)
+                .Select(service => new { Handler = handler, Service = service }))
+            .DistinctBy(unique => new UniqueHandlerPerTypeAndSubType(unique.Handler.InterfaceService, unique.Service!.GetType()))
+            .Select(unique => unique.Service!)
+            .ToList();
+
         if (handlers.Count == 0)
         {
             return;
         }
 
         var middlewareServices = GetMiddlewareServicesFor(@event)
-            .Wrap((request, token) => ExecuteHandlers((IDomainEvent)request, handlers, token))
+            .Wrap((request, token) => handlers.ForEachAsync(handler => handler.HandleGenericRequest(request, token)))
             .Invoke(@event, cancellationToken ?? CancellationToken.None);
     }
 
-
-    private async Task ExecuteHandlers(IDomainEvent @event, IReadOnlyCollection<HandlerDefinition> handlers, CancellationToken cancellationToken)
+    private record UniqueHandlerPerTypeAndSubType
     {
-        foreach (var handler in handlers.SelectMany(h => services
-            .GetServices(h.InterfaceService))
-            .Where(h => h is not null)
-            .DistinctBy(h => h!.GetType().IsGenericType ? h.GetType().GetGenericTypeDefinition() : h.GetType()))
+        public UniqueHandlerPerTypeAndSubType(Type interfaceServiceType, Type handlerType)
         {
-            await handler!.HandleGenericRequest(@event, cancellationToken);
+            InterfaceServiceType = handlerType.IsGenericType ? interfaceServiceType.GetGenericTypeDefinition() : interfaceServiceType;
+            HandlerType = handlerType.IsGenericType ? handlerType.GetGenericTypeDefinition() : handlerType;
         }
+
+        public Type InterfaceServiceType { get; }
+        public Type HandlerType { get; }
     }
 }

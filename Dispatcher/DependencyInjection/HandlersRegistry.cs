@@ -34,6 +34,6 @@ internal class HandlerDefinition(Type handledType, Type interfaceService, Type c
 {
     public Type HandledType { get; } = handledType;
     public Type InterfaceService { get; } = interfaceService;
-    public Type RelativeToGenericConcreteTypeInterfaceService { get; } = concreteType.IsGenericType ? interfaceService.GetGenericTypeDefinition() : interfaceService;
+    public Type RelativeToGenericConcreteTypeInterfaceService { get; } = concreteType.IsGenericType && interfaceService.IsGenericType ? interfaceService.GetGenericTypeDefinition() : interfaceService;
     public Type ConcreteType { get; } = concreteType;
 }

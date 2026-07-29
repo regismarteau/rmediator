@@ -1,5 +1,4 @@
-﻿using Dispatcher.Abstractions;
-using Dispatcher.UnitTests.Handlers.DomainEvents;
+﻿using Dispatcher.UnitTests.Handlers.DomainEvents;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
@@ -17,7 +16,7 @@ public class DomainEventPublisherTests : BaseTests
 
     [Theory]
     [InlineData("someone")]
-    [InlineData("another one")]
+    [InlineData("another guy")]
     public async Task ShouldListenToDomainEvent(string raisedBy)
     {
         await DomainEventPublisher.Publish(new SomeDomainEvent(raisedBy));
@@ -37,8 +36,9 @@ public class DomainEventPublisherTests : BaseTests
     {
         await DomainEventPublisher.Publish(new AnInheritedDomainEvent());
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(
-            typeof(AFirstStronglyTypedListenerHandler), 
-            typeof(ASecondLessStrictConcreteTypeListenerHandler), 
+            typeof(AFirstStronglyTypedTwiceListenerHandler),
+            typeof(AFirstStronglyTypedTwiceListenerHandler),
+            typeof(ASecondLessStrictConcreteTypeListenerHandler),
             typeof(AThirdInheritedInterfaceListenerHandler),
             typeof(AFourthGenericListenerHandler<AnInheritedDomainEvent>));
     }

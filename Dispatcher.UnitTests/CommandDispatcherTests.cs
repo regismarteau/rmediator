@@ -1,7 +1,5 @@
-﻿using Dispatcher.Abstractions;
-using Dispatcher.UnitTests.Handlers.Commands;
+﻿using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
-using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 using NFluent;
 
@@ -17,11 +15,18 @@ public class CommandDispatcherTests : BaseTests
 
     [Theory]
     [InlineData("someone")]
-    [InlineData("another one")]
+    [InlineData("another guy")]
     public async Task ShouldExecuteCommand(string requestedBy)
     {
         await CommandDispatcher.Dispatch(new SomeCommand(requestedBy));
         Check.That(GetService<CommandTriggered>().TriggeredBy).Is(requestedBy);
+    }
+
+    [Fact]
+    public async Task ASubCommandCanTriggerAnHandler()
+    {
+        await CommandDispatcher.Dispatch(new SomeSubCommand("me"));
+        Check.That(GetService<CommandTriggered>().TriggeredBy).Is("me");
     }
 
     [Fact]
@@ -36,9 +41,10 @@ public class CommandDispatcherTests : BaseTests
     {
         var token = new CancellationTokenSource();
         await Task.WhenAll(
-            Task.Run(async () => await CommandDispatcher.Dispatch(new ACancellableCommand(), token.Token), TestContext.Current.CancellationToken),
+            Task.Run(async () => await CommandDispatcher.Dispatch(new ACancellableCommand("me"), token.Token), TestContext.Current.CancellationToken),
             Task.Factory.StartNew(token.Cancel, TestContext.Current.CancellationToken));
-        Check.That(GetService<CommandTriggered>().HasBeenTriggered).IsFalse();
+        Check.That(GetService<CommandTriggered>().TriggeredBy).Is("me");
+        Check.That(GetService<CommandTriggered>().Completed).IsFalse();
     }
 
     [Fact]
