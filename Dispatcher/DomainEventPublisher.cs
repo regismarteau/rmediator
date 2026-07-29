@@ -30,7 +30,7 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
             .Where(h => h is not null)
             .DistinctBy(h => h!.GetType().IsGenericType ? h.GetType().GetGenericTypeDefinition() : h.GetType()))
         {
-            await ((IHandleRequest)handler!).Handle(@event, cancellationToken);
+            await handler!.HandleGenericRequest(@event, cancellationToken);
         }
     }
 }

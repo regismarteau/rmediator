@@ -16,4 +16,15 @@ internal static class TypeExtensions
             return type.IsOfGenericType(typeof(IHandleMiddleware<,>), typeof(IHandleMiddleware<>));
         }
     }
+
+    extension(object obj)
+    {
+        public Task HandleGenericRequest(IRequest request, CancellationToken cancellationToken)
+        {
+            return (Task)typeof(IHandleRequest<>)
+                .MakeGenericType(request.GetType())
+                .GetMethod(nameof(IHandleRequest<>.Handle))!
+                .Invoke(obj, [request, cancellationToken])!;
+        }
+    }
 }

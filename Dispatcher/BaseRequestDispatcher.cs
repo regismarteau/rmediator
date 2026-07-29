@@ -23,7 +23,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
         var middlewareServices = GetMiddlewareServicesFor(request);
 
         await middlewareServices
-            .Wrap(((IHandleRequest)services.GetRequiredService(handler.InterfaceService)).Handle)
+            .Wrap(((IHandleRequest<IRequest>)services.GetRequiredService(handler.InterfaceService)).Handle)
             .Invoke(request, cancellationToken);
     }
 
@@ -36,7 +36,7 @@ internal class BaseRequestDispatcher(HandlersRegistry registry, IServiceProvider
             .ToList();
 
         return await middlewareServices
-            .Wrap(((IHandleRequest<TResponse>)services.GetRequiredService(handler.InterfaceService)).Handle)
+            .Wrap(((IHandleRequestWithResponse<TResponse>)services.GetRequiredService(handler.InterfaceService)).Handle)
             .Invoke(request, cancellationToken);
     }
 

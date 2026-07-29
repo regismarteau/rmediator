@@ -1,4 +1,5 @@
-﻿using Dispatcher.UnitTests.Handlers.Commands;
+﻿using Dispatcher.Abstractions;
+using Dispatcher.UnitTests.Handlers.Commands;
 using Dispatcher.UnitTests.Handlers.Middlewares;
 using Dispatcher.UnitTests.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;

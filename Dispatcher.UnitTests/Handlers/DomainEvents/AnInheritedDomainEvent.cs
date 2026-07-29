@@ -3,14 +3,20 @@
 namespace Dispatcher.UnitTests.Handlers.DomainEvents;
 
 public record AnInheritedDomainEvent : ABaseTypeDomainEvent;
-
+public record ASubTypeDomainEvent : ABaseTypeDomainEvent;
 public record ABaseTypeDomainEvent : IAmASpecificDomainEvent;
 
 public interface IAmASpecificDomainEvent : IDomainEvent;
 
-public class AFirstStronglyTypedListenerHandler(DomainEventListened domainEvents) : IListenToDomainEvent<AnInheritedDomainEvent>
+public class AFirstStronglyTypedListenerHandler(DomainEventListened domainEvents) : IListenToDomainEvent<AnInheritedDomainEvent>, IListenToDomainEvent<ASubTypeDomainEvent>
 {
     public Task Listen(AnInheritedDomainEvent @event, CancellationToken cancellationToken)
+    {
+        domainEvents.Listen(GetType());
+        return Task.CompletedTask;
+    }
+
+    public Task Listen(ASubTypeDomainEvent @event, CancellationToken cancellationToken)
     {
         domainEvents.Listen(GetType());
         return Task.CompletedTask;
