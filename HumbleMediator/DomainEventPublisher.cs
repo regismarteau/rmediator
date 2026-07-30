@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HumbleMediator;
 
-internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : Mediator(registry, services), IPublishDomainEvents
+internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : Mediator(registry, services), IPublishDomainEvent
 {
     private readonly IServiceProvider services = services;
 

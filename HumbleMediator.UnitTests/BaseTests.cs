@@ -38,7 +38,7 @@ public class BaseTests
 
     protected IDispatchCommand CommandDispatcher => GetService<IDispatchCommand>();
 
-    protected IPublishDomainEvents DomainEventPublisher => GetService<IPublishDomainEvents>();
+    protected IPublishDomainEvent DomainEventPublisher => GetService<IPublishDomainEvent>();
 
     protected ExecutedMiddlewares ExecutedMiddlewares => GetService<ExecutedMiddlewares>();
 

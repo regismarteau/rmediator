@@ -1,6 +1,6 @@
 ﻿namespace HumbleMediator.Abstractions;
 
-public interface IPublishDomainEvents
+public interface IPublishDomainEvent
 {
     Task Publish(IDomainEvent @event, CancellationToken? cancellationToken = null);
 }
