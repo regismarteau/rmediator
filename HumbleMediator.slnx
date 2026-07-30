@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Éléments de solution/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="HumbleMediator.Abstractions/HumbleMediator.Abstractions.csproj" Id="02713a82-6506-4ce1-b503-82c0355d668f" />
+  <Project Path="HumbleMediator.UnitTests.Handlers/HumbleMediator.UnitTests.Handlers.csproj" Id="5054e287-a9c8-44cd-a811-5ac237602630" />
+  <Project Path="HumbleMediator.UnitTests/HumbleMediator.UnitTests.csproj" Id="69f566de-2d59-4c34-a225-031945e0a65c" />
+  <Project Path="HumbleMediator/HumbleMediator.csproj" />
+</Solution>
