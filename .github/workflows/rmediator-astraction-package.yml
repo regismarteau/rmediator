@@ -3,7 +3,7 @@ name: Pack RMediator.Abstractions
 on:
   push:
     branches: [ "main" ]
-    paths: [ "RMediator.Abstractions" ]
+    paths: [ "RMediator.Abstractions/**" ]
   workflow_run:
     workflows: [build_and_test]
     types:
