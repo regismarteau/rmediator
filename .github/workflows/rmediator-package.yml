@@ -1,0 +1,20 @@
+name: Push RMediator
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "RMediator/**" ]
+
+jobs:
+  push-rmediator-abstractions:
+    permissions:
+      id-token: write  
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build and test'
+        uses: $/.github/actions/build-and-test
+      - name: 'Push RMediator'
+        uses: $/.github/actions/push-package
+        with:
+          package: "RMediator"
+          nuget-user: ${{ secrets.NUGET_USER }}

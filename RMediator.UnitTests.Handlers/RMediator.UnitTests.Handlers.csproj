@@ -5,9 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\RMediator.Abstractions\RMediator.Abstractions.csproj" />
+	<PackageReference Include="RMediator.Abstractions" />
   </ItemGroup>
-
 </Project>
