@@ -17,3 +17,4 @@ jobs:
         uses: $/.github/actions/push-package
         with:
           package: "RMediator.Abstractions"
+          nuget-user: ${{ secrets.NUGET_USER }}
