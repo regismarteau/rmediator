@@ -13,7 +13,7 @@ jobs:
 
     steps:        
       - name: Pack project
-        run: dotnet pack ${{ inputs.package }}/${{ inputs.package }}.csproj --no-restore --no-build --configuration Release --output artifacts
+        run: dotnet pack ${{ inputs.package }}/${{ inputs.package }}.csproj --configuration Release --output artifacts
 
       - name: NuGet login
         uses: NuGet/login@v1
