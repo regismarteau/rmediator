@@ -9,6 +9,8 @@ jobs:
   build-and-test:  
     uses: $/.github/workflows/build-and-test.yml
   publish-rmediator-abstractions-package:  
+    permissions:
+      id-token: write
     uses: $/.github/workflows/push-package.yml
     with:
       package: RMediator.Abstractions
