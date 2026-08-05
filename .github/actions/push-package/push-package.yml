@@ -1,0 +1,24 @@
+name: 'Pack and push Package'
+description: 'Pack and push Package'
+
+inputs:
+  package:
+    description: 'Package to push'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:    
+    - name: Pack project
+      shell: 'bash'
+      run: dotnet pack ${{ inputs.package }}/${{ inputs.package }}.csproj --configuration Release --output artifacts
+
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+
+    - name: NuGet push
+      shell: 'bash'
+      run: dotnet nuget push artifacts/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

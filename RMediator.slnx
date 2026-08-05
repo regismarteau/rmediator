@@ -2,11 +2,6 @@
   <Folder Name="/Éléments de solution/">
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/Éléments de solution/CI/">
-    <File Path=".github/workflows/rmediator-astraction-package.yml" />
-    <File Path=".github/workflows/main.yml" />
-    <File Path=".github/workflows/push-package.yml" />
-  </Folder>
   <Project Path="RMediator.Abstractions/RMediator.Abstractions.csproj" Id="02713a82-6506-4ce1-b503-82c0355d668f" />
   <Project Path="RMediator.UnitTests.Handlers/RMediator.UnitTests.Handlers.csproj" Id="5054e287-a9c8-44cd-a811-5ac237602630" />
   <Project Path="RMediator.UnitTests/RMediator.UnitTests.csproj" Id="69f566de-2d59-4c34-a225-031945e0a65c" />
