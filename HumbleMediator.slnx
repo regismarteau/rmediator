@@ -1,7 +1,11 @@
 <Solution>
   <Folder Name="/Éléments de solution/">
-    <File Path=".github/workflows/ci.yml" />
     <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/Éléments de solution/CI/">
+    <File Path=".github/workflows/humble-mediator-astraction-package.yml" />
+    <File Path=".github/workflows/main.yml" />
+    <File Path=".github/workflows/push-package.yml" />
   </Folder>
   <Project Path="HumbleMediator.Abstractions/HumbleMediator.Abstractions.csproj" Id="02713a82-6506-4ce1-b503-82c0355d668f" />
   <Project Path="HumbleMediator.UnitTests.Handlers/HumbleMediator.UnitTests.Handlers.csproj" Id="5054e287-a9c8-44cd-a811-5ac237602630" />
