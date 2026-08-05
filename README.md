@@ -4,10 +4,10 @@ As the famous MediatR package has turned into commercial, like many other people
 Nothing fancy here, just basic stuff with the key features I've used the most and I still need to use in my different projects.
 
 # Install
-## RMediator
+## RMediator.DependencyInjection
 The all-in-one package:
 
-    dotnet add package RMediator
+    dotnet add package RMediator.DependencyInjection
 
 ## RMediator.Abstractions
 A no-dependency package only referencing usable interfaces in order to keep core domain as pure and clean as possible:

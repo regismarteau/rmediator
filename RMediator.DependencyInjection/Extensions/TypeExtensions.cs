@@ -1,6 +1,6 @@
 ﻿using RMediator.Abstractions;
 
-namespace RMediator.Extensions;
+namespace RMediator.DependencyInjection.Extensions;
 
 internal static class TypeExtensions
 {

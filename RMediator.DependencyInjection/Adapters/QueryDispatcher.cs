@@ -1,7 +1,7 @@
 ﻿using RMediator.Abstractions;
 using RMediator.DependencyInjection;
 
-namespace RMediator;
+namespace RMediator.DependencyInjection.Adapters;
 
 internal class QueryDispatcher(HandlersRegistry registry, IServiceProvider services) : Mediator(registry, services), IDispatchQuery
 {

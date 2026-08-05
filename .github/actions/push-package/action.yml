@@ -5,8 +5,8 @@ inputs:
   package:
     description: 'Package to push'
     required: true
-  nuget-api-key:
-    description: 'Nuget API key'
+  nuget-user:
+    description: 'Nuger user'
     required: true
 
 runs:
@@ -16,6 +16,12 @@ runs:
       shell: 'bash'
       run: dotnet pack ${{ inputs.package }}/${{ inputs.package }}.csproj --configuration Release --output artifacts
 
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ inputs.nuget-user }}
+
     - name: NuGet push
       shell: 'bash'
-      run: dotnet nuget push artifacts/*.nupkg --api-key ${{inputs.nuget-api-key}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push artifacts/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json

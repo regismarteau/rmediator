@@ -1,12 +1,12 @@
-name: Push RMediator
+name: Push RMediator.DependencyInjection
 
 on:
   push:
     branches: [ "main" ]
-    paths: [ "RMediator/**" ]
+    paths: [ "RMediator.DependencyInjection/**" ]
 
 jobs:
-  push-rmediator:
+  push-rmediator-dependency-injection:
     permissions:
       id-token: write  
     runs-on: ubuntu-latest
@@ -16,5 +16,5 @@ jobs:
       - name: 'Push RMediator'
         uses: $/.github/actions/push-package
         with:
-          package: "RMediator"
-          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+          package: "RMediator.DependencyInjection"
+          nuget-user: ${{ secrets.NUGET_USER }}

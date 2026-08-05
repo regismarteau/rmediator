@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RMediator.UnitTests.Handlers\RMediator.UnitTests.Handlers.csproj" />
-    <ProjectReference Include="..\RMediator\RMediator.csproj" />
+    <ProjectReference Include="..\RMediator.DependencyInjection\RMediator.DependencyInjection.csproj" />
   </ItemGroup>
 
   <ItemGroup>

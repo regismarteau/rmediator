@@ -1,4 +1,4 @@
-﻿namespace RMediator.Extensions;
+﻿namespace RMediator.DependencyInjection.Extensions;
 
 internal static class ListExtensions
 {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RMediator.Abstractions;
 using RMediator.DependencyInjection;
-using RMediator.Extensions;
+using RMediator.DependencyInjection.Extensions;
 
-namespace RMediator;
+namespace RMediator.DependencyInjection.Adapters;
 
 internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : Mediator(registry, services), IPublishDomainEvent
 {

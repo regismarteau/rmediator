@@ -1,5 +1,5 @@
 ﻿using RMediator.Abstractions;
-using RMediator.Extensions;
+using RMediator.DependencyInjection.Extensions;
 using System.Reflection;
 
 namespace RMediator.DependencyInjection;
