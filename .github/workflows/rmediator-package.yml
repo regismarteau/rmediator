@@ -6,7 +6,7 @@ on:
     paths: [ "RMediator/**" ]
 
 jobs:
-  push-rmediator-abstractions:
+  push-rmediator:
     permissions:
       id-token: write  
     runs-on: ubuntu-latest
