@@ -1,0 +1,17 @@
+name: Pack RMediator.Abstractions
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "/not-yet/RMediator.Abstractions" ]
+  workflow_run:
+    workflows: [build_and_test]
+    types:
+      - completed
+
+jobs:
+  publish-rmediator-abstractions-package:  
+    uses: $/.github/workflows/push-package.yml
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    with:
+      package: RMediator.Abstractions

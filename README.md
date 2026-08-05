@@ -1,18 +1,18 @@
-# Humble Mediator
+# RMediator
 As the famous MediatR package has turned into commercial, like many other people I propose my lightweight version of what MediatR offered the best over time.
 
 Nothing fancy here, just basic stuff with the key features I've used the most and I still need to use in my different projects.
 
 # Install
-## HumbleMediator
+## RMediator
 The all-in-one package:
 
-    dotnet add package HumbleMediator
+    dotnet add package RMediator
 
-## HumbleMediator.Abstractions
+## RMediator.Abstractions
 A no-dependency package only referencing usable interfaces in order to keep core domain as pure and clean as possible:
 
-    dotnet add package HumbleMediator.Abstractions
+    dotnet add package RMediator.Abstractions
 
 # How to use it
 ## Registration
