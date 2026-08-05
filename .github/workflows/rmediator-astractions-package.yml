@@ -9,6 +9,7 @@ jobs:
   build-and-test:  
     uses: $/.github/workflows/build-and-test.yml
   publish-rmediator-abstractions-package:  
+    needs: build-and-test
     permissions:
       id-token: write
     uses: $/.github/workflows/push-package.yml
