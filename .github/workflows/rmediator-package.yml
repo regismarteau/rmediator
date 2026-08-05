@@ -17,4 +17,4 @@ jobs:
         uses: $/.github/actions/push-package
         with:
           package: "RMediator"
-          nuget-user: ${{ secrets.NUGET_USER }}
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
