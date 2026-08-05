@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: 'Build and test'
         uses: $/.github/actions/build-and-test
-      - name: 'Push RMediator'
+      - name: 'Push RMediator.DependencyInjection'
         uses: $/.github/actions/push-package
         with:
           package: "RMediator.DependencyInjection"
