@@ -16,7 +16,7 @@ A no-dependency package only referencing usable interfaces in order to keep core
 
 # How to use it
 ## Registration
-Registration go through **Microsoft** classic dependency injection via the method below:
+Registration goes through **Microsoft** classic dependency injection via the method below:
 
 ```csharp
 services
@@ -26,7 +26,7 @@ services
         typeof(MyClass2).Assembly));
 ```
 
-Middlewares can also be referenced **in order** here:
+Middlewares can also be referenced here. They are executed **in the order** they are registered:
 ```csharp
 services
     .AddMediator(o => o
@@ -36,7 +36,7 @@ services
 ```
 
 > [!TIP]
-> The method `.AddMediator(options => ...)` can be called multiple times during services registration to allow splitted configuration if needed.
+> The method `.AddMediator(options => ...)` can be called multiple times during services registration to allow split configuration if needed.
 
 ## Implementation
 This package allows to split the mediator pattern into the two core concepts of CQRS: command and query
@@ -48,5 +48,10 @@ This package allows to split the mediator pattern into the two core concepts of 
 - `IHandleMiddleware<TRequest> / IHandleMiddleware<TRequest, TResponse>` to add specific behavior to given commands / queries / domain events.
 
 > [!TIP]
-> All of the handlers support inheritance for more flexibility and behavior factorization.
+> Handlers and middlewares support inheritance for more flexibility and behavior factorization: a middleware targeting a base type (or an interface) applies to all of its sub-types.
 > Middlewares also support genericity and constraints to fine-tune your pipelines.
+
+## Behavior notes
+- Domain events are published synchronously: `Publish` waits for the listeners, which run one after the other. The first listener exception stops the following ones and is thrown to the caller.
+- Middlewares of a domain event are only executed when at least one listener handles it.
+- Exceptions thrown by handlers are propagated as is, never wrapped.

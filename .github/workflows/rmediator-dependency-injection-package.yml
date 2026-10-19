@@ -11,10 +11,11 @@ jobs:
       id-token: write  
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: 'Build and test'
-        uses: $/.github/actions/build-and-test
+        uses: ./.github/actions/build-and-test
       - name: 'Push RMediator.DependencyInjection'
-        uses: $/.github/actions/push-package
+        uses: ./.github/actions/push-package
         with:
           package: "RMediator.DependencyInjection"
           nuget-user: ${{ secrets.NUGET_USER }}

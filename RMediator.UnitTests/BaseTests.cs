@@ -25,8 +25,13 @@ public class BaseTests
                     typeof(AThirdlyExecutedStronglyTypedQueryMiddleware),
                     typeof(AThirdlyExecutedStronglyTypedCommandMiddleware),
                     typeof(AThirdlyExecutedStronglyTypedCommandWithResultMiddleware),
-                    typeof(AThirdlyExecutedStronglyTypedDomainEventMiddleware)))
-            .AddSingleton<ExecutedMiddlewares>())
+                    typeof(AThirdlyExecutedStronglyTypedDomainEventMiddleware),
+                    typeof(BaseCommandMiddleware),
+                    typeof(BaseCommandWithResultMiddleware),
+                    typeof(BaseQueryMiddleware),
+                    typeof(BaseEventMiddleware)))
+            .AddSingleton<ExecutedMiddlewares>()
+            .AddSingleton<EventProbe>())
             .BuildServiceProvider(true);
     }
 

@@ -1,4 +1,6 @@
 ﻿using RMediator.Abstractions;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 namespace RMediator.DependencyInjection.Extensions;
 
@@ -21,10 +23,18 @@ internal static class TypeExtensions
     {
         public Task HandleGenericRequest(IRequest request, CancellationToken cancellationToken)
         {
-            return (Task)typeof(IHandleRequest<>)
-                .MakeGenericType(request.GetType())
-                .GetMethod(nameof(IHandleRequest<>.Handle))!
-                .Invoke(obj, [request, cancellationToken])!;
+            try
+            {
+                return (Task)typeof(IHandleRequest<>)
+                    .MakeGenericType(request.GetType())
+                    .GetMethod(nameof(IHandleRequest<>.Handle))!
+                    .Invoke(obj, [request, cancellationToken])!;
+            }
+            catch (TargetInvocationException exception) when (exception.InnerException is not null)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                throw;
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
             return;
         }
 
-        var middlewareServices = GetMiddlewareServicesFor(@event)
+        await GetMiddlewareServicesFor(@event)
             .Wrap((request, token) => handlers.ForEachAsync(handler => handler.HandleGenericRequest(request, token)))
             .Invoke(@event, cancellationToken ?? CancellationToken.None);
     }

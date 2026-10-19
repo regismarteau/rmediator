@@ -23,6 +23,13 @@ internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadO
             .Where(i => i.IsOfGenericType([.. HandlerServiceTypes]))
             .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
 
+    public int GetMiddlewareOrder(Type middlewareType)
+    {
+        var concreteType = middlewareType.IsGenericType ? middlewareType.GetGenericTypeDefinition() : middlewareType;
+        var index = MiddlewareHandlersDefinition.Select(d => d.ConcreteType).ToList().IndexOf(concreteType);
+        return index < 0 ? int.MaxValue : index;
+    }
+
     public HandlersRegistry Merge(IReadOnlyCollection<Assembly> otherAssemblies, IReadOnlyCollection<Type> otherMiddlewareTypes)
     {
         return new([.. assemblies.Concat(otherAssemblies).Distinct()], [.. middlewareTypes.Concat(otherMiddlewareTypes).Distinct()]);

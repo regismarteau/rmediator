@@ -4,7 +4,6 @@ description: 'Install and build .NET'
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
