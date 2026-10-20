@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <EnablePackageValidation>true</EnablePackageValidation>
     <PackageId>RMediator.DependencyInjection</PackageId>
     <Description>A simple implementation of the Mediator pattern with commands, queries, events and pipeline handlers.</Description>
   </PropertyGroup>

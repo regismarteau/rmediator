@@ -6,10 +6,14 @@ using RMediator.DependencyInjection.Adapters;
 
 namespace RMediator.DependencyInjection;
 
+/// <summary>Registration of the mediator in the service collection.</summary>
 public static class ConfigureServices
 {
     extension(IServiceCollection services)
     {
+        /// <summary>Registers the dispatchers, the handlers and the middlewares. Can be called several times: the configurations are merged.</summary>
+        /// <param name="options">Configures the assemblies to scan and the middlewares.</param>
+        /// <returns>The service collection.</returns>
         public IServiceCollection AddMediator(Action<ConfigureServicesOptionsBuilder>? options = null)
         {
             var opt = new ConfigureServicesOptionsBuilder();
@@ -28,17 +32,24 @@ public static class ConfigureServices
         }
     }
 
+    /// <summary>Options of <c>AddMediator</c>.</summary>
     public class ConfigureServicesOptionsBuilder
     {
         private readonly List<Assembly> assemblies = [];
         private readonly List<Type> middlewares = [];
 
+        /// <summary>Registers the handlers found in the given assemblies. Abstract classes and interfaces are ignored.</summary>
+        /// <param name="assemblies">The assemblies to scan.</param>
+        /// <returns>The builder.</returns>
         public ConfigureServicesOptionsBuilder ScanAssemblies(params Assembly[] assemblies)
         {
             this.assemblies.AddRange(assemblies);
             return this;
         }
 
+        /// <summary>Registers middlewares, which run in the order they are given.</summary>
+        /// <param name="middlewareTypes">The middleware types, open generics allowed.</param>
+        /// <returns>The builder.</returns>
         public ConfigureServicesOptionsBuilder AddMiddlewares(params Type[] middlewareTypes)
         {
             middlewares.AddRange(middlewareTypes);

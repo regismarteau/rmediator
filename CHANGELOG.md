@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Breaking:** `Dispatch` and `Publish` take a `CancellationToken cancellationToken = default` instead of a nullable `CancellationToken?`. Callers that omit the token are unaffected; passing `null` no longer compiles, and the change is binary-incompatible with 1.0.x.
 - **Breaking:** `ConfigureServicesOptionsBuilder.Build` is now internal.
+- `RMediator.DependencyInjection` depends on the `Microsoft.Extensions.DependencyInjection` version matching each target framework (8.0.1, 9.0.0, 10.0.0) instead of 10.x everywhere.
+- The public API is documented with XML comments, and package validation is enabled.
 - Handler and middleware lookups and the reflection used to invoke handlers are cached, which reduces allocations per dispatch.
 - `RMediator.Abstractions` and `RMediator.DependencyInjection` now share the same version, taken from the release tag.
 
