@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-10-20
+
 ### Changed
 
 - `RMediator.DependencyInjection` depends on the `Microsoft.Extensions.DependencyInjection` version matching each target framework (8.0.1, 9.0.0, 10.0.0) instead of 10.x everywhere.
@@ -43,5 +45,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Initial release: commands, queries, domain events and middleware pipeline.
 
-[Unreleased]: https://github.com/regismarteau/rmediator/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/regismarteau/rmediator/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/regismarteau/rmediator/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/regismarteau/rmediator/compare/v1.0.1...v2.0.0
