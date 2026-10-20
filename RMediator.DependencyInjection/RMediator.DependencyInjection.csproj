@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.1.0</Version>
     <PackageId>RMediator.DependencyInjection</PackageId>
     <Description>A simple implementation of the Mediator pattern with commands, queries, events and pipeline handlers.</Description>
   </PropertyGroup>
