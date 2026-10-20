@@ -21,10 +21,15 @@
     <RepositoryUrl>https://github.com/regismarteau/rmediator</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>mediator;cqrs;command;query;event;pipeline;middleware</PackageTags>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)assets\icon.png" Pack="true" PackagePath="" Visible="false" />
+  </ItemGroup>
 </Project>

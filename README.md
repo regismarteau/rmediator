@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon.png" alt="RMediator logo" width="128">
+</p>
+
 # RMediator
 
 [![CI](https://github.com/regismarteau/rmediator/actions/workflows/ci.yml/badge.svg)](https://github.com/regismarteau/rmediator/actions/workflows/ci.yml)
