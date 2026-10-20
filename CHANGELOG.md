@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- `RMediator.DependencyInjection` depends on the `Microsoft.Extensions.DependencyInjection` version matching each target framework (8.0.1, 9.0.0, 10.0.0) instead of 10.x everywhere.
+- The public API is documented with XML comments, and package validation is enabled.
+
+## [2.0.0] - 2026-10-20
+
 ### Added
 
 - Support for .NET 8 and .NET 9, in addition to .NET 10.
@@ -17,8 +24,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Breaking:** `Dispatch` and `Publish` take a `CancellationToken cancellationToken = default` instead of a nullable `CancellationToken?`. Callers that omit the token are unaffected; passing `null` no longer compiles, and the change is binary-incompatible with 1.0.x.
 - **Breaking:** `ConfigureServicesOptionsBuilder.Build` is now internal.
-- `RMediator.DependencyInjection` depends on the `Microsoft.Extensions.DependencyInjection` version matching each target framework (8.0.1, 9.0.0, 10.0.0) instead of 10.x everywhere.
-- The public API is documented with XML comments, and package validation is enabled.
 - Handler and middleware lookups and the reflection used to invoke handlers are cached, which reduces allocations per dispatch.
 - `RMediator.Abstractions` and `RMediator.DependencyInjection` now share the same version, taken from the release tag.
 
@@ -38,4 +43,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Initial release: commands, queries, domain events and middleware pipeline.
 
-[Unreleased]: https://github.com/regismarteau/rmediator/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/regismarteau/rmediator/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/regismarteau/rmediator/compare/v1.0.1...v2.0.0
