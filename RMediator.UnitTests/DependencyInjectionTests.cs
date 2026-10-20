@@ -25,4 +25,28 @@ public class DependencyInjectionTests
         Check.That(someQueryResponse.Value).Is("Some response for me!");
         Check.That(anotherQueryResponse).Is("It goes through another middleware and through another query!");
     }
+
+    [Fact]
+    public async Task AbstractHandlersAreIgnoredWhenScanningAssemblies()
+    {
+        var services = new ServiceCollection()
+            .AddMediator(o => o.ScanAssemblies(typeof(DependencyInjectionTests).Assembly))
+            .BuildServiceProvider(true);
+
+        var response = await services.GetRequiredService<IDispatchQuery>().Dispatch(new ConcreteHandledQuery());
+
+        Check.That(response).Is("from concrete handler");
+    }
+}
+
+public record ConcreteHandledQuery : IQuery<string>;
+
+public abstract class AbstractQueryHandler : IHandleQuery<ConcreteHandledQuery, string>
+{
+    public abstract Task<string> Handle(ConcreteHandledQuery query, CancellationToken cancellationToken);
+}
+
+public class ConcreteQueryHandler : AbstractQueryHandler
+{
+    public override Task<string> Handle(ConcreteHandledQuery query, CancellationToken cancellationToken) => Task.FromResult("from concrete handler");
 }

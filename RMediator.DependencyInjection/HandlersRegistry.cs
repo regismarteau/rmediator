@@ -19,6 +19,7 @@ internal class HandlersRegistry(IReadOnlyCollection<Assembly> assemblies, IReadO
 
     public IEnumerable<HandlerDefinition> HandlerDefinitions { get; } = [.. assemblies
             .SelectMany(a => a.GetTypes())
+            .Where(t => t is { IsClass: true, IsAbstract: false })
             .SelectMany(t => t.GetInterfaces()
             .Where(i => i.IsOfGenericType([.. HandlerServiceTypes]))
             .Select(i => new HandlerDefinition(i.GetGenericArguments()[0], i, t)))];
