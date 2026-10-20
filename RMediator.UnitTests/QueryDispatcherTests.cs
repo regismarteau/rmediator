@@ -11,21 +11,21 @@ public class QueryDispatcherTests : BaseTests
     [InlineData("another guy")]
     public async Task ShouldReturnSomeResponse(string requestedBy)
     {
-        var response = await QueryDispatcher.Dispatch(new SomeQuery(requestedBy));
+        var response = await QueryDispatcher.Dispatch(new SomeQuery(requestedBy), TestContext.Current.CancellationToken);
         Check.That(response.Value).Is($"Some response for {requestedBy}!");
     }
 
     [Fact]
     public async Task ASubQueryCanTriggerAnHandler()
     {
-        var response = await QueryDispatcher.Dispatch(new SomeSubQuery("me"));
+        var response = await QueryDispatcher.Dispatch(new SomeSubQuery("me"), TestContext.Current.CancellationToken);
         Check.That(response.Value).Is("Some response for me!");
     }
 
     [Fact]
     public async Task ShouldReturnAnotherResponse()
     {
-        var response = await QueryDispatcher.Dispatch(new AnotherQuery());
+        var response = await QueryDispatcher.Dispatch(new AnotherQuery(), TestContext.Current.CancellationToken);
         Check.That(response.Value).Is("Another response!");
     }
 
@@ -44,7 +44,7 @@ public class QueryDispatcherTests : BaseTests
     [Fact]
     public async Task CorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await QueryDispatcher.Dispatch(new AQueryWithMiddlewares());
+        await QueryDispatcher.Dispatch(new AQueryWithMiddlewares(), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
             typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AQueryWithMiddlewares, SomeQueryResponse>),
@@ -54,7 +54,7 @@ public class QueryDispatcherTests : BaseTests
     [Fact]
     public async Task SomeQueriesMightOnlyHaveGenericMiddlewares()
     {
-        await QueryDispatcher.Dispatch(new AnotherQuery());
+        await QueryDispatcher.Dispatch(new AnotherQuery(), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<AnotherQuery, SomeQueryResponse>),
             typeof(ASecondlyExecutedGenericTypedQueryMiddleware<AnotherQuery, SomeQueryResponse>));

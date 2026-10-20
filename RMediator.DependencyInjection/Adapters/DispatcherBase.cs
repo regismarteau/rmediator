@@ -4,8 +4,10 @@ using RMediator.DependencyInjection.Extensions;
 
 namespace RMediator.DependencyInjection.Adapters;
 
-internal class Mediator(HandlersRegistry registry, IServiceProvider services)
+internal abstract class DispatcherBase(HandlersRegistry registry, IServiceProvider services)
 {
+    protected IServiceProvider Services { get; } = services;
+
     protected async Task<TResponse> SendRequest<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
     {
         var handler = GetSingleHandler(request);
@@ -14,13 +16,29 @@ internal class Mediator(HandlersRegistry registry, IServiceProvider services)
             .ToList();
 
         return await middlewareServices
-            .Wrap(((IHandleRequestWithResponse<TResponse>)services.GetRequiredService(handler.InterfaceService)).Handle)
+            .Wrap(((IHandleRequestWithResponse<TResponse>)Services.GetRequiredService(handler.InterfaceService)).Handle)
             .Invoke(request, cancellationToken);
     }
 
     protected List<IAbstractMiddlewareHandler> GetMiddlewareServicesFor(IRequest request)
     {
         return [.. GetMiddlewares(request.GetType(), null).OfType<IAbstractMiddlewareHandler>()];
+    }
+
+    protected HandlerDefinition GetSingleHandler(IRequest request)
+    {
+        var handlers = GetHandlersFor(request);
+        return handlers.Count switch
+        {
+            1 => handlers.First(),
+            0 => throw new InvalidOperationException($"No handler is registered for {request.GetType().Name}"),
+            _ => throw new InvalidOperationException($"Several handlers are registered for {request.GetType().Name}: {string.Join(", ", handlers.Select(h => h.ConcreteType.Name))}")
+        };
+    }
+
+    protected IReadOnlyCollection<HandlerDefinition> GetHandlersFor(IRequest request)
+    {
+        return registry.GetHandlersFor(request.GetType());
     }
 
     private List<object> GetMiddlewares(Type requestType, Type? responseType)
@@ -41,41 +59,12 @@ internal class Mediator(HandlersRegistry registry, IServiceProvider services)
 
     private IEnumerable<object> GetBaseTypeMiddlewares(Type requestType, Type? responseType)
     {
-        return registry.MiddlewareHandlersDefinition
-            .Where(d => !d.ConcreteType.IsGenericTypeDefinition
-                && d.HandledType != requestType
-                && d.HandledType.IsAssignableFrom(requestType)
-                && IsMiddlewareServiceFor(d.InterfaceService, responseType))
-            .DistinctBy(d => d.InterfaceService)
+        return registry.GetBaseTypeMiddlewaresFor(requestType, responseType)
             .SelectMany(d => GetServicesOf(d.InterfaceService).Where(m => m.GetType() == d.ConcreteType));
     }
 
     private IEnumerable<object> GetServicesOf(Type serviceType)
     {
-        return services.GetServices(serviceType).OfType<object>();
-    }
-
-    private static bool IsMiddlewareServiceFor(Type middlewareService, Type? responseType)
-    {
-        return responseType is null
-            ? middlewareService.GetGenericTypeDefinition() == typeof(IHandleMiddleware<>)
-            : middlewareService.GetGenericTypeDefinition() == typeof(IHandleMiddleware<,>)
-                && middlewareService.GetGenericArguments()[1] == responseType;
-    }
-
-    protected HandlerDefinition GetSingleHandler(IRequest request)
-    {
-        var handlers = GetHandlersFor(request);
-        if (handlers.Count != 1)
-        {
-            throw new InvalidOperationException($"There is no unique handler for {request.GetType().Name}");
-        }
-
-        return handlers.First();
-    }
-
-    protected IReadOnlyCollection<HandlerDefinition> GetHandlersFor(IRequest request)
-    {
-        return [.. registry.HandlerDefinitions.Where(t => t.HandledType.IsAssignableFrom(request.GetType()))];
+        return Services.GetServices(serviceType).OfType<object>();
     }
 }

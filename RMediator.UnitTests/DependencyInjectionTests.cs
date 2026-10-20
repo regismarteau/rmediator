@@ -19,8 +19,8 @@ public class DependencyInjectionTests
             .BuildServiceProvider(true);
 
         var queryDispatcher = services.GetRequiredService<IDispatchQuery>();
-        var someQueryResponse = await queryDispatcher.Dispatch(new SomeQuery("me"));
-        var anotherQueryResponse = await queryDispatcher.Dispatch(new AnotherAssemblyQuery());
+        var someQueryResponse = await queryDispatcher.Dispatch(new SomeQuery("me"), TestContext.Current.CancellationToken);
+        var anotherQueryResponse = await queryDispatcher.Dispatch(new AnotherAssemblyQuery(), TestContext.Current.CancellationToken);
 
         Check.That(someQueryResponse.Value).Is("Some response for me!");
         Check.That(anotherQueryResponse).Is("It goes through another middleware and through another query!");
@@ -33,7 +33,7 @@ public class DependencyInjectionTests
             .AddMediator(o => o.ScanAssemblies(typeof(DependencyInjectionTests).Assembly))
             .BuildServiceProvider(true);
 
-        var response = await services.GetRequiredService<IDispatchQuery>().Dispatch(new ConcreteHandledQuery());
+        var response = await services.GetRequiredService<IDispatchQuery>().Dispatch(new ConcreteHandledQuery(), TestContext.Current.CancellationToken);
 
         Check.That(response).Is("from concrete handler");
     }

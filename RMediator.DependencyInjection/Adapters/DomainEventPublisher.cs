@@ -4,15 +4,13 @@ using RMediator.DependencyInjection.Extensions;
 
 namespace RMediator.DependencyInjection.Adapters;
 
-internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : Mediator(registry, services), IPublishDomainEvent
+internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider services) : DispatcherBase(registry, services), IPublishDomainEvent
 {
-    private readonly IServiceProvider services = services;
-
-    public async Task Publish(IDomainEvent @event, CancellationToken? cancellationToken = null)
+    public async Task Publish(IDomainEvent @event, CancellationToken cancellationToken = default)
     {
         var handlers = GetHandlersFor(@event)
             .DistinctBy(handler => handler.InterfaceService)
-            .SelectMany(handler => services
+            .SelectMany(handler => Services
                 .GetServices(handler.InterfaceService)
                 .Where(service => service is not null)
                 .Select(service => new { Handler = handler, Service = service }))
@@ -27,7 +25,7 @@ internal class DomainEventPublisher(HandlersRegistry registry, IServiceProvider 
 
         await GetMiddlewareServicesFor(@event)
             .Wrap((request, token) => handlers.ForEachAsync(handler => handler.HandleGenericRequest(request, token)))
-            .Invoke(@event, cancellationToken ?? CancellationToken.None);
+            .Invoke(@event, cancellationToken);
     }
 
     private record UniqueHandlerPerTypeAndSubType

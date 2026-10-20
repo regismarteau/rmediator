@@ -9,7 +9,7 @@ public class InheritanceTests : BaseTests
     [Fact]
     public async Task CommandMiddlewareOfBaseTypeAppliesToSubTypeInRegistrationOrder()
     {
-        await CommandDispatcher.Dispatch(new SubCommand());
+        await CommandDispatcher.Dispatch(new SubCommand(), TestContext.Current.CancellationToken);
 
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SubCommand>),
@@ -20,7 +20,7 @@ public class InheritanceTests : BaseTests
     [Fact]
     public async Task CommandWithResultMiddlewareOfBaseTypeAppliesToSubType()
     {
-        var result = await CommandDispatcher.Dispatch(new SubCommandWithResult());
+        var result = await CommandDispatcher.Dispatch(new SubCommandWithResult(), TestContext.Current.CancellationToken);
 
         Check.That(result).Is("done");
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
@@ -32,7 +32,7 @@ public class InheritanceTests : BaseTests
     [Fact]
     public async Task QueryMiddlewareOfBaseTypeAppliesToSubType()
     {
-        await QueryDispatcher.Dispatch(new SubQuery());
+        await QueryDispatcher.Dispatch(new SubQuery(), TestContext.Current.CancellationToken);
 
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SubQuery, string>),
@@ -43,7 +43,7 @@ public class InheritanceTests : BaseTests
     [Fact]
     public async Task DomainEventMiddlewareOfBaseTypeAppliesToSubType()
     {
-        await DomainEventPublisher.Publish(new SubEvent());
+        await DomainEventPublisher.Publish(new SubEvent(), TestContext.Current.CancellationToken);
 
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SubEvent>),
@@ -54,7 +54,7 @@ public class InheritanceTests : BaseTests
     [Fact]
     public async Task MiddlewareOfBaseTypeIsNotExecutedTwiceForBaseTypeRequest()
     {
-        await CommandDispatcher.Dispatch(new BaseCommand());
+        await CommandDispatcher.Dispatch(new BaseCommand(), TestContext.Current.CancellationToken);
 
         Check.That(ExecutedMiddlewares.ExecutedTypes.Count(t => t == typeof(BaseCommandMiddleware))).Is(1);
     }

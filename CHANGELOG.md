@@ -11,9 +11,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Support for .NET 8 and .NET 9, in addition to .NET 10.
 - Symbol packages (`.snupkg`) and SourceLink for step-through debugging.
 - Tag-driven release workflow and CI on pull requests.
+- Dispatching a request without handler, or with several handlers, now fails with a message that says which case it is and lists the competing handlers.
 
 ### Changed
 
+- **Breaking:** `Dispatch` and `Publish` take a `CancellationToken cancellationToken = default` instead of a nullable `CancellationToken?`. Callers that omit the token are unaffected; passing `null` no longer compiles, and the change is binary-incompatible with 1.0.x.
+- **Breaking:** `ConfigureServicesOptionsBuilder.Build` is now internal.
+- Handler and middleware lookups and the reflection used to invoke handlers are cached, which reduces allocations per dispatch.
 - `RMediator.Abstractions` and `RMediator.DependencyInjection` now share the same version, taken from the release tag.
 
 ### Fixed

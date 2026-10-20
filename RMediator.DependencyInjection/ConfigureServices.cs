@@ -45,7 +45,7 @@ public static class ConfigureServices
             return this;
         }
 
-        public IServiceCollection Build(IServiceCollection services)
+        internal IServiceCollection Build(IServiceCollection services)
         {
             var registry = (HandlersRegistry?)services.FirstOrDefault(s => s.ServiceType == typeof(HandlersRegistry))?.ImplementationInstance;
             if (registry is null)
