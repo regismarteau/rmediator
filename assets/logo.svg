@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="RMediator">
+  <rect width="512" height="512" fill="#0d0e12"/>
+  <path d="M160 100 V412 M160 100 H268 A75 75 0 0 1 268 250 H160" fill="none" stroke="#ececee" stroke-width="44" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M268 250 L350 412" fill="none" stroke="#f2b34f" stroke-width="44" stroke-linecap="round"/>
+  <circle cx="273" cy="250" r="33" fill="#f2b34f"/>
+</svg>

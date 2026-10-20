@@ -1,19 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">	
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<Version>1.0.0</Version>
-	<PackageId>RMediator.Abstractions</PackageId>
-	<Description>A simple implementation of the Mediator pattern with commands, queries, events and pipeline handlers. This package contains only contract interfaces to be used with RMediator.</Description>
-	<PackageTags>mediator;command;query;event;pipeline</PackageTags>
-	<Authors>Régis MARTEAU</Authors>
-	<RepositoryUrl>https://github.com/regismarteau/rmediator</RepositoryUrl>
+    <PackageId>RMediator.Abstractions</PackageId>
+    <Description>A simple implementation of the Mediator pattern with commands, queries, events and pipeline handlers. This package contains only contract interfaces to be used with RMediator.</Description>
   </PropertyGroup>
+
   <ItemGroup>
-	<None Include="..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
-	<None Include="..\README.md" Pack="true" Visible="false" PackagePath=""/>
+    <None Include="..\README.md" Pack="true" Visible="false" PackagePath="" />
   </ItemGroup>
+
 </Project>

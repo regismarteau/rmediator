@@ -19,7 +19,7 @@ public class DomainEventPublisherTests : BaseTests
     [InlineData("another guy")]
     public async Task ShouldListenToDomainEvent(string raisedBy)
     {
-        await DomainEventPublisher.Publish(new SomeDomainEvent(raisedBy));
+        await DomainEventPublisher.Publish(new SomeDomainEvent(raisedBy), TestContext.Current.CancellationToken);
         Check.That(DomainEvent.RaisedBy).Is(raisedBy);
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(SomeDomainEventListener));
     }
@@ -27,14 +27,14 @@ public class DomainEventPublisherTests : BaseTests
     [Fact]
     public async Task MultipleListenersCouldByDefined()
     {
-        await DomainEventPublisher.Publish(new AMultipleListenedDomainEvent());
+        await DomainEventPublisher.Publish(new AMultipleListenedDomainEvent(), TestContext.Current.CancellationToken);
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(typeof(AFirstListenerHandler), typeof(ASecondListenerHandler));
     }
 
     [Fact]
     public async Task ListenersHandleDomainEventsInheritance()
     {
-        await DomainEventPublisher.Publish(new AnInheritedDomainEvent());
+        await DomainEventPublisher.Publish(new AnInheritedDomainEvent(), TestContext.Current.CancellationToken);
         Check.That(DomainEvent.ListenedBy).IsEquivalentTo(
             typeof(AFirstStronglyTypedTwiceListenerHandler),
             typeof(AFirstStronglyTypedTwiceListenerHandler),
@@ -46,7 +46,7 @@ public class DomainEventPublisherTests : BaseTests
     [Fact]
     public async Task DomainEventCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await DomainEventPublisher.Publish(new SomeDomainEvent("Raised by me"));
+        await DomainEventPublisher.Publish(new SomeDomainEvent("Raised by me"), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SomeDomainEvent>),
             typeof(ASecondlyExecutedGenericTypedDomainEventMiddleware<SomeDomainEvent>),

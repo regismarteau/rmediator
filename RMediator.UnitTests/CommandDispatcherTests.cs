@@ -18,21 +18,21 @@ public class CommandDispatcherTests : BaseTests
     [InlineData("another guy")]
     public async Task ShouldExecuteCommand(string requestedBy)
     {
-        await CommandDispatcher.Dispatch(new SomeCommand(requestedBy));
+        await CommandDispatcher.Dispatch(new SomeCommand(requestedBy), TestContext.Current.CancellationToken);
         Check.That(GetService<CommandTriggered>().TriggeredBy).Is(requestedBy);
     }
 
     [Fact]
     public async Task ASubCommandCanTriggerAnHandler()
     {
-        await CommandDispatcher.Dispatch(new SomeSubCommand("me"));
+        await CommandDispatcher.Dispatch(new SomeSubCommand("me"), TestContext.Current.CancellationToken);
         Check.That(GetService<CommandTriggered>().TriggeredBy).Is("me");
     }
 
     [Fact]
     public async Task ShouldReturnExecutionResult()
     {
-        var result = await CommandDispatcher.Dispatch(new SomeCommandWithResult());
+        var result = await CommandDispatcher.Dispatch(new SomeCommandWithResult(), TestContext.Current.CancellationToken);
         Check.That(result.Value).Is("A command result!");
     }
 
@@ -50,7 +50,7 @@ public class CommandDispatcherTests : BaseTests
     [Fact]
     public async Task CommandCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await CommandDispatcher.Dispatch(new ACommandWithMiddlewares());
+        await CommandDispatcher.Dispatch(new ACommandWithMiddlewares(), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithMiddlewares>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithMiddlewares>),
@@ -60,7 +60,7 @@ public class CommandDispatcherTests : BaseTests
     [Fact]
     public async Task CommandWithResultCorrespondingMiddlewaresAreExecutedInOrder()
     {
-        await CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares());
+        await CommandDispatcher.Dispatch(new ACommandWithResultWithMiddlewares(), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<ACommandWithResultWithMiddlewares, SomeCommandResult>),
@@ -70,7 +70,7 @@ public class CommandDispatcherTests : BaseTests
     [Fact]
     public async Task SomeCommandsMightOnlyHaveGenericMiddlewares()
     {
-        await CommandDispatcher.Dispatch(new SomeCommand("Requested by me"));
+        await CommandDispatcher.Dispatch(new SomeCommand("Requested by me"), TestContext.Current.CancellationToken);
         Check.That(ExecutedMiddlewares.ExecutedTypes).ContainsExactly(
             typeof(AFirstlyExecutedGeneralMiddleware<SomeCommand>),
             typeof(ASecondlyExecutedGenericTypedCommandMiddleware<SomeCommand>));

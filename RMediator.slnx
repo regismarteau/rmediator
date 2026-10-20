@@ -1,5 +1,7 @@
 <Solution>
   <Folder Name="/Éléments de solution/">
+    <File Path="Directory.Build.props" />
+    <File Path=".editorconfig" />
     <File Path="Directory.Packages.props" />
   </Folder>
   <Project Path="RMediator.Abstractions/RMediator.Abstractions.csproj" Id="02713a82-6506-4ce1-b503-82c0355d668f" />

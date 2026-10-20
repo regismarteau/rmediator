@@ -2,8 +2,8 @@
 
 public interface IDispatchCommand
 {
-    Task Dispatch(ICommand command, CancellationToken? cancellationToken = null);
-    Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken? cancellationToken = null);
+    Task Dispatch(ICommand command, CancellationToken cancellationToken = default);
+    Task<TResult> Dispatch<TResult>(ICommand<TResult> command, CancellationToken cancellationToken = default);
 }
 
 public interface ICommand : IRequest;
