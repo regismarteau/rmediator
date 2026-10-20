@@ -1,5 +1,4 @@
 ﻿using RMediator.Abstractions;
-using RMediator.DependencyInjection;
 
 namespace RMediator.DependencyInjection.Adapters;
 

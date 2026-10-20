@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RMediator.Abstractions;
 using RMediator.DependencyInjection.Adapters;
-using System.Reflection;
 
 namespace RMediator.DependencyInjection;
 
@@ -47,7 +47,7 @@ public static class ConfigureServices
 
         public IServiceCollection Build(IServiceCollection services)
         {
-            HandlersRegistry? registry = (HandlersRegistry?)services.FirstOrDefault(s => s.ServiceType == typeof(HandlersRegistry))?.ImplementationInstance;
+            var registry = (HandlersRegistry?)services.FirstOrDefault(s => s.ServiceType == typeof(HandlersRegistry))?.ImplementationInstance;
             if (registry is null)
             {
                 registry = new HandlersRegistry(assemblies, middlewares);
@@ -68,7 +68,7 @@ public static class ConfigureServices
 
         private static void AddMissingHandlers(IServiceCollection services, HandlersRegistry registry)
         {
-            foreach (HandlerDefinition definition in registry.HandlerDefinitions.Concat(registry.MiddlewareHandlersDefinition))
+            foreach (var definition in registry.HandlerDefinitions.Concat(registry.MiddlewareHandlersDefinition))
             {
                 var existingService = services.FirstOrDefault(s => s.ServiceType == definition.RelativeToGenericConcreteTypeInterfaceService && s.ImplementationType == definition.ConcreteType);
                 if (existingService is not null)

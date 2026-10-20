@@ -1,6 +1,6 @@
-﻿using RMediator.Abstractions;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.ExceptionServices;
+using RMediator.Abstractions;
 
 namespace RMediator.DependencyInjection.Extensions;
 

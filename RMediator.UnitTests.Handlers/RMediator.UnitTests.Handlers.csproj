@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-    <LangVersion>14</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
+
   <ItemGroup>
-	<ProjectReference Include="..\RMediator.Abstractions\RMediator.Abstractions.csproj" />
+    <ProjectReference Include="..\RMediator.Abstractions\RMediator.Abstractions.csproj" />
   </ItemGroup>
+
 </Project>
