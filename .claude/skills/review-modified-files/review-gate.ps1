@@ -4,6 +4,7 @@
 .NOTES
   Sans argument : hook PreToolUse sur Bash, déclaré dans .claude/settings.json du projet par sync.ps1 (JSON sur stdin ; code 2 = appel refusé, stderr est renvoyé à Claude).
   Sans effet pour un commit sans code.
+  Hook PostToolUse sur `dotnet test` (sans --filter, réussi) : enregistre l'empreinte de l'état testé ; -Mark ne relance pas dotnet test si elle est égale à l'état courant.
   Le dépôt contrôlé est le `cwd` du JSON du hook (le worktree de la session).
   -Mark : appelé par le skill review-modified-files en fin de revue ; lance dotnet format sur les fichiers modifiés puis dotnet test sur la solution,
   et n'enregistre l'empreinte de l'état courant (stockée dans le dossier git, jamais commitée) que si tout passe.
@@ -32,8 +33,23 @@ function Get-Fingerprint {
     ([BitConverter]::ToString([Security.Cryptography.SHA256]::Create().ComputeHash($bytes))) -replace '-'
 }
 
-$markerPath = git -C $root rev-parse --git-path claude-review-fingerprint
-if (-not [IO.Path]::IsPathRooted($markerPath)) { $markerPath = Join-Path $root $markerPath }
+function Get-MarkerPath([string]$Name) {
+    $path = git -C $root rev-parse --git-path $Name
+    if ([IO.Path]::IsPathRooted($path)) { $path } else { Join-Path $root $path }
+}
+
+$markerPath = Get-MarkerPath 'claude-review-fingerprint'
+$testsMarkerPath = Get-MarkerPath 'claude-tests-fingerprint'
+
+if ($payload.hook_event_name -eq 'PostToolUse') {
+    $command = $payload.tool_input.command
+    $response = $payload.tool_response
+    $failed = $response.is_error -or $response.interrupted -or ($null -ne $response.exit_code -and $response.exit_code -ne 0)
+    if ($command -match '(?m)(^|[;&|]\s*)dotnet\s+test(\s|$)' -and $command -notmatch '--filter' -and -not $failed) {
+        [IO.File]::WriteAllText($testsMarkerPath, (Get-Fingerprint))
+    }
+    exit 0
+}
 
 if ($Mark) {
     Remove-Item $markerPath -ErrorAction SilentlyContinue
@@ -46,13 +62,18 @@ if ($Mark) {
                 dotnet format $solution.FullName --severity info --include @sources
                 if ($LASTEXITCODE -ne 0) { [Console]::Error.WriteLine('dotnet format a échoué : corriger puis relancer.'); exit 1 }
             }
-            $output = dotnet test $solution.FullName 2>&1
-            if ($LASTEXITCODE -ne 0) {
-                $output | Select-Object -Last 80 | ForEach-Object { [Console]::Error.WriteLine($_) }
-                [Console]::Error.WriteLine('dotnet test a échoué : corriger puis relancer.')
-                exit 1
+            $tested = if (Test-Path $testsMarkerPath) { [IO.File]::ReadAllText($testsMarkerPath).Trim() } else { '' }
+            if ($tested -eq (Get-Fingerprint)) { Write-Output 'tests déjà verts sur l''état courant : dotnet test non relancé.' }
+            else {
+                $output = dotnet test $solution.FullName 2>&1
+                if ($LASTEXITCODE -ne 0) {
+                    $output | Select-Object -Last 80 | ForEach-Object { [Console]::Error.WriteLine($_) }
+                    [Console]::Error.WriteLine('dotnet test a échoué : corriger puis relancer.')
+                    exit 1
+                }
+                $output | Select-Object -Last 3 | Write-Output
+                [IO.File]::WriteAllText($testsMarkerPath, (Get-Fingerprint))
             }
-            $output | Select-Object -Last 3 | Write-Output
         }
         finally { Pop-Location }
     }
